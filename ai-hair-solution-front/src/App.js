@@ -15,6 +15,7 @@ import Footer from './components/common/Footer';
 import Main from './pages/Main';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import SalonsPage from './pages/SalonsPage'; // 새로 추가한 페이지
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
               <Route path="/" element={<Main />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/nearby-salons" element={<SalonsPage />} />
             </Routes>
           </Box>
           <Footer />

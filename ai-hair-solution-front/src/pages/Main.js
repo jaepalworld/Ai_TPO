@@ -1,11 +1,16 @@
 import React from 'react';
 import { Box, Container, Typography, Button, Grid } from '@mui/material';
 import HeroSection from '../components/home/maincollection/HeroSection';
-import TrendCollectionSection from '../components/home/maincollection/TrendCollectionSection'; // 새 경로로 import
+import TrendCollectionSection from '../components/home/maincollection/TrendCollectionSection';
 import HeroSlider from '../components/home/maincollection/HeroSlider';
 import LookbookSection from '../components/home/maincollection/LookbookSection';
 import FeatureSection from '../components/home/FeatureSection';
 import TestimonialSection from '../components/home/TestimonialSection';
+import NearbySalonsSection from '../components/home/NearbySalonsSection'; // 새로 추가한 컴포넌트
+// 둘 중 하나만 선택해서 사용하세요:
+// import StylistReservation from '../components/home/StylistReservation';
+// 또는
+// import StylistConsultationSection from '../components/home/StylistConsultationSection';
 
 const Main = () => {
     return (
@@ -24,10 +29,16 @@ const Main = () => {
             {/* 4. LOOKBOOK (LookbookSection) */}
             <LookbookSection />
 
-            {/* 5. 핵심 기능 (FeatureSection) */}
+            {/* 새로 추가: 주변 헤어샵 찾기 섹션 */}
+            <NearbySalonsSection />
+
+            {/* 5. 스타일리스트 상담 섹션 (아직 사용하지 않음 대기 ) */}
+            {/* <StylistConsultationSection /> */}
+
+            {/* 6. 핵심 기능 (FeatureSection) */}
             <FeatureSection />
 
-            {/* 6. 고객 후기 (TestimonialSection) */}
+            {/* 7. 고객 후기 (TestimonialSection) */}
             <TestimonialSection />
 
             {/* 하단 CTA 섹션 */}

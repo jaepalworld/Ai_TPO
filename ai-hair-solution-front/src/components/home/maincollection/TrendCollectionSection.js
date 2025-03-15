@@ -398,12 +398,9 @@ const TrendCollectionSection = () => {
                         <AdCard animate={animateAd}>
                             <ImageContainer>
                                 <img
-                                    src={process.env.PUBLIC_URL + '/images/ai-model.jpg'}
-                                    alt="AI 광고 모델"
-                                    onError={(e) => {
-                                        // 이미지가 없을 경우 대체 이미지
-                                        e.target.src = 'https://via.placeholder.com/280x350?text=AI+Model';
-                                    }}
+                                    src={process.env.PUBLIC_URL + '/images/cardimage.png'}
+                                    alt="AI 솔루션션"
+
                                 />
                             </ImageContainer>
 
@@ -418,7 +415,7 @@ const TrendCollectionSection = () => {
                                 mb: 1,
                                 fontSize: '2rem',
                             }}>
-                                AI 광고
+                                Ai Hair Solution
                             </Typography>
 
                             <Typography variant="body1" sx={{
