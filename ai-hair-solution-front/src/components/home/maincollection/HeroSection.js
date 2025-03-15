@@ -1,9 +1,11 @@
-import React from 'react';
-import { Box, Container, Typography, Button, Grid, Paper } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Container, Typography, Button, Grid, Paper, Modal } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import CloseIcon from '@mui/icons-material/Close';
+import TPOStyleWizard from './TPOStyleWizard'; // 위자드 컴포넌트 임포트
 
-// 스타일링된 컴포넌트
+// 기존 스타일링된 컴포넌트들은 그대로 유지
 const HeroWrapper = styled(Box)(({ theme }) => ({
     position: 'relative',
     overflow: 'hidden',
@@ -99,7 +101,67 @@ const OutlinedActionButton = styled(Button)(({ theme }) => ({
     },
 }));
 
+// 모달 스타일
+const StyledModal = styled(Modal)(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: theme.spacing(2),
+}));
+
+const ModalContent = styled(Box)(({ theme }) => ({
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: 16,
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(0),
+    position: 'relative',
+    width: '100%',
+    maxWidth: 1000,
+    maxHeight: '90vh',
+    overflow: 'auto',
+}));
+
+const ModalCloseButton = styled(Button)(({ theme }) => ({
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    minWidth: 'auto',
+    zIndex: 1,
+}));
+
+// 이미지 오버레이 효과
+const ImageOverlay = styled(Box)(({ theme }) => ({
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    color: 'white',
+    opacity: 0,
+    transition: 'opacity 0.3s ease',
+    borderRadius: 24,
+    '&:hover': {
+        opacity: 1,
+    },
+}));
+
 const HeroSection = () => {
+    // 모달 상태 관리
+    const [open, setOpen] = useState(false);
+
+    const handleOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
     return (
         <HeroWrapper>
             <Container maxWidth="lg">
@@ -138,6 +200,7 @@ const HeroSection = () => {
                                 color="primary"
                                 size="large"
                                 endIcon={<ArrowForwardIcon />}
+                                onClick={handleOpen}
                             >
                                 무료로 시작하기
                             </ActionButton>
@@ -200,19 +263,63 @@ const HeroSection = () => {
                     <Grid item xs={12} md={6} sx={{ zIndex: 1 }}>
                         <ImageContainer>
                             <StyledImagePlaceholder elevation={10}>
-                                <Typography
-                                    variant="h5"
-                                    color="white"
-                                    fontWeight={600}
-                                    sx={{ textShadow: '0 2px 10px rgba(0,0,0,0.2)' }}
-                                >
-                                    AI 헤어스타일 시뮬레이션
-                                </Typography>
+                                <Box sx={{ position: 'relative', width: '100%', height: '100%' }}>
+                                    <Typography
+                                        variant="h5"
+                                        color="white"
+                                        fontWeight={600}
+                                        sx={{
+                                            textShadow: '0 2px 10px rgba(0,0,0,0.2)',
+                                            position: 'absolute',
+                                            top: '50%',
+                                            left: '50%',
+                                            transform: 'translate(-50%, -50%)',
+                                            zIndex: 1
+                                        }}
+                                    >
+                                        AI 헤어스타일 시뮬레이션
+                                    </Typography>
+                                    <ImageOverlay>
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={handleOpen}
+                                            sx={{ mb: 2 }}
+                                        >
+                                            지금 시작하기
+                                        </Button>
+                                        <Typography variant="body2">
+                                            TPO에 맞는 헤어스타일 추천받기
+                                        </Typography>
+                                    </ImageOverlay>
+                                </Box>
                             </StyledImagePlaceholder>
                         </ImageContainer>
                     </Grid>
                 </Grid>
             </Container>
+
+            {/* TPO 스타일 추천 위자드 모달 */}
+            <StyledModal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="style-wizard-modal"
+                aria-describedby="ai-hairstyle-recommendation-wizard"
+            >
+                <ModalContent>
+                    <ModalCloseButton color="inherit" onClick={handleClose}>
+                        <CloseIcon />
+                    </ModalCloseButton>
+                    <Box sx={{ p: 3 }}>
+                        <Typography variant="h4" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
+                            TPO 맞춤 헤어스타일 추천
+                        </Typography>
+                    </Box>
+                    <Box sx={{ px: 3, pb: 3 }}>
+                        <TPOStyleWizard />
+                    </Box>
+                </ModalContent>
+            </StyledModal>
         </HeroWrapper>
     );
 };
