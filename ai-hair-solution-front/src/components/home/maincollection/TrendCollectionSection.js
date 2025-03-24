@@ -423,7 +423,7 @@ const TrendCollectionSection = () => {
                                 mb: 3,
                                 fontSize: '1rem',
                             }}>
-                                인공지능으로 제작하는 맞춤형 광고
+                                지금바로 시작해 보세요 !
                             </Typography>
 
                             <TryNowButton href="/HairAi">

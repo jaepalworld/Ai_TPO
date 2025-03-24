@@ -1,16 +1,13 @@
 import React from 'react';
 import { Box, Container, Typography, Button, Grid } from '@mui/material';
 import HeroSection from '../components/home/maincollection/HeroSection';
+import HeroBackSection from '../components/home/maincollection/HeroBackSection'; // 새로 추가
 import TrendCollectionSection from '../components/home/maincollection/TrendCollectionSection';
 import HeroSlider from '../components/home/maincollection/HeroSlider';
 import LookbookSection from '../components/home/maincollection/LookbookSection';
 import FeatureSection from '../components/home/FeatureSection';
 import TestimonialSection from '../components/home/TestimonialSection';
-import NearbySalonsSection from '../components/home/NearbySalonsSection'; // 새로 추가한 컴포넌트
-// 둘 중 하나만 선택해서 사용하세요:
-// import StylistReservation from '../components/home/StylistReservation';
-// 또는
-// import StylistConsultationSection from '../components/home/StylistConsultationSection';
+import NearbySalonsSection from '../components/home/NearbySalonsSection';
 
 const Main = () => {
     return (
@@ -23,17 +20,17 @@ const Main = () => {
             {/* 2. 당신의 스타일을 AI 헤어 디자인으로 완성하세요 (HeroSection) */}
             <HeroSection />
 
-            {/* 3. Collection (TrendCollectionSection) */}
+            {/* 3. 다양한 상황에서 당신의 스타일을 확인하세요 (HeroBackSection) */}
+            <HeroBackSection />
+
+            {/* 4. Collection (TrendCollectionSection) */}
             <TrendCollectionSection />
 
-            {/* 4. LOOKBOOK (LookbookSection) */}
+            {/* 5. LOOKBOOK (LookbookSection) */}
             <LookbookSection />
 
             {/* 새로 추가: 주변 헤어샵 찾기 섹션 */}
             <NearbySalonsSection />
-
-            {/* 5. 스타일리스트 상담 섹션 (아직 사용하지 않음 대기 ) */}
-            {/* <StylistConsultationSection /> */}
 
             {/* 6. 핵심 기능 (FeatureSection) */}
             <FeatureSection />

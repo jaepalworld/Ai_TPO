@@ -13,7 +13,7 @@ import {
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { registerUser } from '../services/auth';
 
-const Register = () => {
+const Signup = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -38,10 +38,24 @@ const Register = () => {
         setLoading(true);
 
         try {
-            const { user, error } = await registerUser(email, password);
+            // user 변수 사용하지 않는 경고 해결 - destructuring에서 제거
+            const { error: registerError } = await registerUser(email, password);
 
-            if (error) {
-                setError(error);
+            if (registerError) {
+                // Firebase 오류 메시지를 사용자 친화적으로 변환
+                let errorMessage = registerError;
+
+                if (registerError.includes('email-already-in-use')) {
+                    errorMessage = '이미 사용 중인 이메일 주소입니다.';
+                } else if (registerError.includes('invalid-email')) {
+                    errorMessage = '유효하지 않은 이메일 형식입니다.';
+                } else if (registerError.includes('operation-not-allowed')) {
+                    errorMessage = '이메일/비밀번호 로그인이 비활성화되어 있습니다.';
+                } else if (registerError.includes('weak-password')) {
+                    errorMessage = '비밀번호가 너무 약합니다.';
+                }
+
+                setError(errorMessage);
             } else {
                 // 회원가입 성공 시 홈으로 리다이렉트
                 navigate('/');
@@ -127,4 +141,4 @@ const Register = () => {
     );
 };
 
-export default Register;
+export default Signup;

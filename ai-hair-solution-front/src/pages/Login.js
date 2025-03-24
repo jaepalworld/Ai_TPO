@@ -26,17 +26,33 @@ const Login = () => {
         setLoading(true);
 
         try {
-            const { user, error } = await loginUser(email, password);
+            // user 변수 사용하지 않는 경고 해결 - destructuring에서 제거
+            const { error: loginError } = await loginUser(email, password);
 
-            if (error) {
-                setError(error);
+            if (loginError) {
+                // Firebase 오류 메시지를 사용자 친화적으로 변환
+                let errorMessage = '로그인 중 오류가 발생했습니다.';
+
+                if (loginError.includes('invalid-email')) {
+                    errorMessage = '유효하지 않은 이메일 형식입니다.';
+                } else if (loginError.includes('user-disabled')) {
+                    errorMessage = '이 계정은 비활성화되었습니다.';
+                } else if (loginError.includes('user-not-found')) {
+                    errorMessage = '등록되지 않은 이메일입니다.';
+                } else if (loginError.includes('wrong-password')) {
+                    errorMessage = '비밀번호가 올바르지 않습니다.';
+                } else if (loginError.includes('too-many-requests')) {
+                    errorMessage = '너무 많은 로그인 시도가 있었습니다. 잠시 후 다시 시도해주세요.';
+                }
+
+                setError(errorMessage);
             } else {
                 // 로그인 성공 시 홈으로 리다이렉트
                 navigate('/');
             }
         } catch (err) {
-            setError('로그인 중 오류가 발생했습니다.');
             console.error(err);
+            setError('로그인 중 오류가 발생했습니다.');
         } finally {
             setLoading(false);
         }
@@ -97,7 +113,7 @@ const Login = () => {
                                 </Link>
                             </Grid>
                             <Grid item>
-                                <Link component={RouterLink} to="/register" variant="body2">
+                                <Link component={RouterLink} to="/signup" variant="body2">
                                     계정이 없으신가요? 회원가입
                                 </Link>
                             </Grid>

@@ -79,6 +79,53 @@ const SliderOverlay = styled(Box)({
     zIndex: 2,
 });
 
+// 메인 타이틀 컨테이너 (왼쪽 하단 위치)
+const MainTitleContainer = styled(Box)(({ theme }) => ({
+    position: 'absolute',
+    bottom: 100, // 아래쪽에서 100px 위치
+    left: 80, // 왼쪽에서 80px 위치
+    zIndex: 20,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+}));
+
+// 메인 타이틀 스타일
+const MainTitle = styled(Typography)(({ theme }) => ({
+    color: '#ffffff',
+    fontWeight: 600,
+    fontSize: '4rem',
+    fontFamily: "'Playfair Display', serif",
+    letterSpacing: '0.02em',
+    lineHeight: 1.2,
+    textShadow: '0 2px 15px rgba(0, 0, 0, 0.4)',
+    marginBottom: theme.spacing(1),
+    animation: `${fadeIn} 1.2s ease-out forwards`,
+    animationDelay: '0.3s',
+    opacity: 0,
+    position: 'relative',
+    '&::after': {
+        content: '""',
+        position: 'absolute',
+        bottom: -10,
+        left: 0,
+        width: '40%',
+        height: 4,
+        backgroundColor: theme.palette.primary.main,
+    }
+}));
+
+// 서브 타이틀 스타일
+const SubTitle = styled(Typography)(({ theme, delay }) => ({
+    color: '#f0f0f0',
+    fontWeight: 400,
+    fontSize: '1.4rem',
+    marginTop: theme.spacing(1),
+    opacity: 0,
+    animation: `${fadeIn} 1s ease-out forwards`,
+    animationDelay: delay || '0.6s',
+    textShadow: '0 2px 8px rgba(0, 0, 0, 0.5)',
+}));
 
 const ContentWrapper = styled(Container)(({ theme, active }) => ({
     position: 'relative',
@@ -171,7 +218,7 @@ const slides = [
         id: 3,
         image: process.env.PUBLIC_URL + '/images/aback3.png',
         // title: '특별한 날을 위한 준비',
-        // subtitle: '중요한 행사와 특별한 날에 빛나는 모습을 선사합니다.',
+        // subtitle: '중요한 날에 빛나는 모습을 선사합니다.',
         actionText: '자세히 보기',
     },
 ];
@@ -272,6 +319,19 @@ const HeroSlider = () => {
                     active={index === activeSlide}
                 />
             ))}
+
+            {/* 메인 타이틀 (왼쪽 하단에 배치) */}
+            <MainTitleContainer>
+                <MainTitle variant="h1">
+                    DEV Portfolio
+                </MainTitle>
+                <SubTitle variant="h5" delay="0.6s">
+                    AI Style Transform
+                </SubTitle>
+                <SubTitle variant="h6" delay="0.9s">
+                    Time, Place, Occasion 스튜디오
+                </SubTitle>
+            </MainTitleContainer>
 
             {/* 컨텐츠 */}
             {slides.map((slide, index) => (

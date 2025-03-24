@@ -28,7 +28,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 // API 서비스 import - 경로 확인 필요
-// import { analyzeFace, simulateHairstyle } from '../services/apiService';
+// import { simulateBackground } from '../services/apiService';
 
 // 스타일링된 컴포넌트
 const WizardContainer = styled(Box)(({ theme }) => ({
@@ -39,84 +39,100 @@ const WizardContainer = styled(Box)(({ theme }) => ({
     backdropFilter: 'blur(10px)',
     position: 'relative',
     zIndex: 5,
+    maxHeight: '85vh', // 최대 높이 설정
+    overflowY: 'auto', // 세로 스크롤 추가
+    display: 'flex',
+    flexDirection: 'column', // 컨텐츠를 세로로 배치
 }));
 
 const StyleCard = styled(Card)(({ theme, selected }) => ({
     cursor: 'pointer',
     transition: 'all 0.3s ease',
     transform: selected ? 'scale(1.05)' : 'scale(1)',
-    border: selected ? `2px solid ${theme.palette.primary.main}` : 'none',
+    border: selected ? `2px solid ${theme.palette.info.main}` : 'none',
     boxShadow: selected
-        ? '0 10px 20px rgba(156, 39, 176, 0.3)'
+        ? '0 10px 20px rgba(33, 150, 243, 0.3)'
         : '0 5px 15px rgba(0, 0, 0, 0.08)',
     '&:hover': {
         transform: 'scale(1.03)',
-        boxShadow: '0 8px 16px rgba(156, 39, 176, 0.2)',
+        boxShadow: '0 8px 16px rgba(33, 150, 243, 0.2)',
     }
 }));
 
 const UploadBox = styled(Box)(({ theme, isDragActive }) => ({
-    border: `2px dashed ${isDragActive ? theme.palette.primary.main : theme.palette.grey[300]}`,
+    border: `2px dashed ${isDragActive ? theme.palette.info.main : theme.palette.grey[300]}`,
     borderRadius: 16,
-    padding: theme.spacing(6),
+    padding: theme.spacing(4), // 패딩 줄이기 (6 -> 4)
     textAlign: 'center',
-    backgroundColor: isDragActive ? 'rgba(156, 39, 176, 0.05)' : 'transparent',
+    backgroundColor: isDragActive ? 'rgba(33, 150, 243, 0.05)' : 'transparent',
     transition: 'all 0.3s ease',
     cursor: 'pointer',
+    minHeight: '120px', // 최소 높이 설정
+    maxHeight: '180px', // 최대 높이 설정
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
     '&:hover': {
-        backgroundColor: 'rgba(156, 39, 176, 0.05)',
-        borderColor: theme.palette.primary.light,
+        backgroundColor: 'rgba(33, 150, 243, 0.05)',
+        borderColor: theme.palette.info.light,
     }
 }));
 
 const StepperContainer = styled(Box)(({ theme }) => ({
-    marginBottom: theme.spacing(6),
+    marginBottom: theme.spacing(3), // 여백 줄이기
 }));
 
-const TPOStyleWizard = () => {
+
+
+const TpoBackStyle = () => {
     // 상태 관리
     const [activeStep, setActiveStep] = useState(0);
-    const [selectedFaceShape, setSelectedFaceShape] = useState(null);
-    const [selectedHairLength, setSelectedHairLength] = useState(null);
+    const [selectedBackground, setSelectedBackground] = useState(null);
     const [selectedOccasion, setSelectedOccasion] = useState(null);
     const [uploadedImage, setUploadedImage] = useState(null);
     const [uploadedImageFile, setUploadedImageFile] = useState(null);
+    const [savedHairStyleImage, setSavedHairStyleImage] = useState(null); // 이전 단계에서 가져온 헤어스타일 이미지
     const [isDragActive, setIsDragActive] = useState(false);
     const [showResultDialog, setShowResultDialog] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [analysisResult, setAnalysisResult] = useState(null);
     const [simulationResult, setSimulationResult] = useState(null);
     const [error, setError] = useState(null);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-    // 얼굴형 데이터
-    const faceShapes = [
-        { id: 'oval', name: '계란형', image: '/placeholder/face-oval.jpg' },
-        { id: 'round', name: '둥근형', image: '/placeholder/face-round.jpg' },
-        { id: 'square', name: '각진형', image: '/placeholder/face-square.jpg' },
-        { id: 'heart', name: '하트형', image: '/placeholder/face-heart.jpg' },
-        { id: 'long', name: '긴 형', image: '/placeholder/face-long.jpg' },
-    ];
-
-    // 헤어 길이 데이터
-    const hairLengths = [
-        { id: 'short', name: '숏 헤어', image: '/placeholder/hair-short.jpg' },
-        { id: 'medium', name: '미디엄 헤어', image: '/placeholder/hair-medium.jpg' },
-        { id: 'long', name: '롱 헤어', image: '/placeholder/hair-long.jpg' },
-    ];
-
-    // 상황 (TPO) 데이터
+    // TPO 상황 데이터
     const occasions = [
-        { id: 'date', name: '데이트', image: '/placeholder/occasion-date.jpg' },
-        { id: 'wedding', name: '결혼식', image: '/placeholder/occasion-wedding.jpg' },
-        { id: 'funeral', name: '장례식', image: '/placeholder/occasion-funeral.jpg' },
-        { id: 'cafe', name: '카페', image: '/placeholder/occasion-cafe.jpg' },
-        { id: 'work', name: '직장', image: '/placeholder/occasion-work.jpg' },
-        { id: 'party', name: '파티', image: '/placeholder/occasion-party.jpg' },
+        { id: 'business', name: '비즈니스/직장', image: '/placeholder/occasion-business.jpg' },
+        { id: 'date', name: '데이트/미팅', image: '/placeholder/occasion-date.jpg' },
+        { id: 'party', name: '파티/행사', image: '/placeholder/occasion-party.jpg' },
+        { id: 'casual', name: '일상/캐주얼', image: '/placeholder/occasion-casual.jpg' },
+        { id: 'wedding', name: '웨딩/가족행사', image: '/placeholder/occasion-wedding.jpg' }
+    ];
+
+    // 배경 데이터
+    const backgrounds = [
+        { id: 'office', name: '오피스', image: '/placeholder/background-office.jpg' },
+        { id: 'restaurant', name: '레스토랑', image: '/placeholder/background-restaurant.jpg' },
+        { id: 'cafe', name: '카페', image: '/placeholder/background-cafe.jpg' },
+        { id: 'outdoor', name: '야외/공원', image: '/placeholder/background-outdoor.jpg' },
+        { id: 'event', name: '이벤트홀', image: '/placeholder/background-event.jpg' },
+        { id: 'street', name: '거리/길', image: '/placeholder/background-street.jpg' }
     ];
 
     // 단계 정의
-    const steps = ['얼굴 사진 업로드', '얼굴형 선택', '현재 헤어 길이', '상황 선택'];
+    const steps = ['사진 가져오기', '상황(TPO) 선택', '배경 선택'];
+
+    // 헤어스타일 이미지 가져오기 (실제 구현 시 로컬 스토리지 또는 전역 상태 관리로 대체)
+    useEffect(() => {
+        // 임시로 localStorage에서 헤어스타일 이미지를 가져오는 코드 (예시)
+        const savedImage = localStorage.getItem('hairStyleImage');
+        if (savedImage) {
+            setSavedHairStyleImage(savedImage);
+        } else {
+            // 헤어스타일 이미지가 없는 경우 (이미지가 있다고 가정하고 설정)
+            setSavedHairStyleImage('/placeholder/default-hairstyle.jpg');
+        }
+    }, []);
 
     // 오류 스낵바 핸들러
     const handleSnackbarClose = () => {
@@ -191,46 +207,8 @@ const TPOStyleWizard = () => {
         }
     };
 
-    // 얼굴 분석 함수
-    const analyzeUploadedFace = async () => {
-        if (!uploadedImageFile) return;
-
-        try {
-            setIsLoading(true);
-            setError(null);
-
-            // API 서비스가 구현되면 주석 해제
-            /*
-            const result = await analyzeFace(uploadedImageFile);
-            
-            setAnalysisResult(result);
-            
-            // 자동으로 얼굴형 선택 (백엔드에서 제공한 경우)
-            if (result.face_shape) {
-              setSelectedFaceShape(result.face_shape.toLowerCase());
-            }
-            */
-
-            // 임시: API 연동 전 테스트용 지연
-            setTimeout(() => {
-                setIsLoading(false);
-            }, 1000);
-
-        } catch (err) {
-            console.error('얼굴 분석 오류:', err);
-            setError('얼굴 분석 중 오류가 발생했습니다. 다시 시도해주세요.');
-            setSnackbarOpen(true);
-            setIsLoading(false);
-        }
-    };
-
     // 다음 단계로 이동
     const handleNext = async () => {
-        if (activeStep === 0 && uploadedImageFile) {
-            // 1단계로 넘어갈 때 얼굴 분석 시작
-            await analyzeUploadedFace();
-        }
-
         if (activeStep === steps.length - 1) {
             // 마지막 단계에서는 시뮬레이션 및 결과 다이얼로그 표시
             handleSubmitSimulation();
@@ -244,7 +222,7 @@ const TPOStyleWizard = () => {
         setActiveStep((prevStep) => prevStep - 1);
     };
 
-    // 헤어스타일 시뮬레이션 실행
+    // 배경 시뮬레이션 실행
     const handleSubmitSimulation = async () => {
         try {
             setIsLoading(true);
@@ -253,11 +231,10 @@ const TPOStyleWizard = () => {
 
             // API 서비스가 구현되면 주석 해제
             /*
-            const result = await simulateHairstyle({
-              image: uploadedImageFile,
-              faceShape: selectedFaceShape,
-              hairLength: selectedHairLength,
-              occasion: selectedOccasion
+            const result = await simulateBackground({
+              image: uploadedImage || savedHairStyleImage,
+              occasion: selectedOccasion,
+              background: selectedBackground
             });
             
             setSimulationResult(result);
@@ -268,16 +245,18 @@ const TPOStyleWizard = () => {
                 setIsLoading(false);
                 // 테스트용 더미 결과
                 setSimulationResult({
-                    style_info: {
-                        description: `${selectedOccasion}을(를) 위한 맞춤형 헤어스타일입니다.`,
-                        tips: "스타일링 시 볼륨을 살려주면 더 좋습니다."
+                    background_info: {
+                        occasion: selectedOccasion,
+                        background: selectedBackground,
+                        description: `${getOccasionName()} 상황의 ${getBackgroundName()} 배경에 적용된 이미지입니다.`,
+                        tips: "이런 환경에서는 자신감 있는 표정과 자세가 중요합니다."
                     }
                 });
             }, 2000);
 
         } catch (err) {
             console.error('시뮬레이션 오류:', err);
-            setError('헤어스타일 시뮬레이션 중 오류가 발생했습니다. 다시 시도해주세요.');
+            setError('배경 시뮬레이션 중 오류가 발생했습니다. 다시 시도해주세요.');
             setSnackbarOpen(true);
             setIsLoading(false);
         }
@@ -295,7 +274,7 @@ const TPOStyleWizard = () => {
                         >
                             <CardMedia
                                 component="img"
-                                height="140"
+                                height="120" // 140 -> 120으로 줄이기
                                 image={item.image}
                                 alt={item.name}
                                 sx={{ objectFit: 'cover' }}
@@ -304,13 +283,13 @@ const TPOStyleWizard = () => {
                                     e.target.src = `https://via.placeholder.com/300x200?text=${item.name}`;
                                 }}
                             />
-                            <CardContent>
+                            <CardContent sx={{ p: 1 }}> {/* 패딩 줄이기 */}
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Typography variant="h6" component="div">
+                                    <Typography variant="subtitle1" component="div">
                                         {item.name}
                                     </Typography>
                                     {selectedItem === item.id && (
-                                        <CheckCircleIcon color="primary" />
+                                        <CheckCircleIcon color="info" />
                                     )}
                                 </Box>
                             </CardContent>
@@ -321,17 +300,69 @@ const TPOStyleWizard = () => {
         );
     };
 
+    // 상황/배경 이름 가져오기 함수
+    const getOccasionName = () => {
+        const occasion = occasions.find(o => o.id === selectedOccasion);
+        return occasion ? occasion.name : '';
+    };
+
+    const getBackgroundName = () => {
+        const background = backgrounds.find(b => b.id === selectedBackground);
+        return background ? background.name : '';
+    };
+
     // 현재 단계 컨텐츠 렌더링
     const getStepContent = (step) => {
         switch (step) {
             case 0:
                 return (
-                    <Box sx={{ textAlign: 'center' }}>
+                    <Box sx={{ textAlign: 'center', py: 1, px: 1 }}>
                         <Typography variant="h5" gutterBottom>
-                            얼굴 사진을 업로드해주세요
+                            헤어스타일 사진을 가져와주세요
                         </Typography>
                         <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-                            AI가 당신의 얼굴형을 분석하여 최적의 헤어스타일을 추천해 드립니다.
+                            이전에 생성한 헤어스타일 사진이나 새로운 사진을 업로드하세요.
+                        </Typography>
+
+                        {/* 이전 헤어스타일 이미지가 있을 경우 표시 */}
+                        {savedHairStyleImage && (
+                            <Box sx={{ mb: 3 }}>
+                                <Typography variant="h6" gutterBottom>
+                                    이전에 생성한 헤어스타일
+                                </Typography>
+                                <Box sx={{ display: 'inline-block' }}>
+                                    <img
+                                        src={savedHairStyleImage}
+                                        alt="Saved hairstyle"
+                                        style={{
+                                            maxWidth: '100%',
+                                            maxHeight: '180px',
+                                            borderRadius: '16px',
+                                            boxShadow: '0 8px 20px rgba(0, 0, 0, 0.15)'
+                                        }}
+                                        onError={(e) => {
+                                            e.target.src = 'https://via.placeholder.com/300x400?text=헤어스타일+이미지';
+                                        }}
+                                    />
+                                    <Box sx={{ mt: 1, textAlign: 'center' }}>
+                                        <Button
+                                            variant="contained"
+                                            color="info"
+                                            size="small"
+                                            onClick={() => {
+                                                setUploadedImage(savedHairStyleImage);
+                                                setActiveStep(1);
+                                            }}
+                                        >
+                                            이 이미지 사용하기
+                                        </Button>
+                                    </Box>
+                                </Box>
+                            </Box>
+                        )}
+
+                        <Typography variant="h6" gutterBottom>
+                            또는 새 이미지 업로드
                         </Typography>
 
                         <input
@@ -351,7 +382,7 @@ const TPOStyleWizard = () => {
                                 component="label"
                                 htmlFor="image-upload"
                             >
-                                <CloudUploadIcon sx={{ fontSize: 60, color: 'primary.main', mb: 2 }} />
+                                <CloudUploadIcon sx={{ fontSize: 60, color: 'info.main', mb: 2 }} />
                                 <Typography variant="h6" gutterBottom>
                                     이미지를 드래그하거나 클릭하여 업로드
                                 </Typography>
@@ -363,17 +394,17 @@ const TPOStyleWizard = () => {
                             <Box sx={{ position: 'relative', mt: 2 }}>
                                 <img
                                     src={uploadedImage}
-                                    alt="Uploaded face"
+                                    alt="Uploaded image"
                                     style={{
                                         maxWidth: '100%',
-                                        maxHeight: '300px',
+                                        maxHeight: '200px', // 300px -> 200px로 줄이기
                                         borderRadius: '16px',
                                         boxShadow: '0 8px 20px rgba(0, 0, 0, 0.15)'
                                     }}
                                 />
                                 <Button
                                     variant="outlined"
-                                    color="primary"
+                                    color="info"
                                     component="label"
                                     htmlFor="image-upload"
                                     sx={{ mt: 2 }}
@@ -388,36 +419,24 @@ const TPOStyleWizard = () => {
                 return (
                     <Box>
                         <Typography variant="h5" gutterBottom>
-                            얼굴형을 선택해 주세요
+                            상황(TPO)을 선택해 주세요
                         </Typography>
                         <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-                            정확한 추천을 위해 가장 비슷한 얼굴형을 선택해 주세요.
+                            어떤 상황에서의 스타일을 확인하고 싶으신가요?
                         </Typography>
-                        {renderSelectionCards(faceShapes, selectedFaceShape, setSelectedFaceShape)}
+                        {renderSelectionCards(occasions, selectedOccasion, setSelectedOccasion)}
                     </Box>
                 );
             case 2:
                 return (
                     <Box>
                         <Typography variant="h5" gutterBottom>
-                            현재 헤어 길이를 선택해 주세요
+                            배경을 선택해 주세요
                         </Typography>
                         <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-                            현재 헤어스타일에 가장 가까운 길이를 선택해 주세요.
+                            선택한 상황에 맞는 배경을 선택하세요.
                         </Typography>
-                        {renderSelectionCards(hairLengths, selectedHairLength, setSelectedHairLength)}
-                    </Box>
-                );
-            case 3:
-                return (
-                    <Box>
-                        <Typography variant="h5" gutterBottom>
-                            어떤 상황을 위한 스타일인가요?
-                        </Typography>
-                        <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-                            헤어스타일을 적용할 상황(TPO)을 선택해 주세요.
-                        </Typography>
-                        {renderSelectionCards(occasions, selectedOccasion, setSelectedOccasion)}
+                        {renderSelectionCards(backgrounds, selectedBackground, setSelectedBackground)}
                     </Box>
                 );
             default:
@@ -429,13 +448,11 @@ const TPOStyleWizard = () => {
     const isNextDisabled = () => {
         switch (activeStep) {
             case 0:
-                return !uploadedImage;
+                return !uploadedImage && !savedHairStyleImage;
             case 1:
-                return !selectedFaceShape;
-            case 2:
-                return !selectedHairLength;
-            case 3:
                 return !selectedOccasion;
+            case 2:
+                return !selectedBackground;
             default:
                 return false;
         }
@@ -443,11 +460,6 @@ const TPOStyleWizard = () => {
 
     // 결과 다이얼로그
     const ResultDialog = () => {
-        const getOccasionName = () => {
-            const occasion = occasions.find(o => o.id === selectedOccasion);
-            return occasion ? occasion.name : '';
-        };
-
         return (
             <Dialog
                 open={showResultDialog}
@@ -457,21 +469,23 @@ const TPOStyleWizard = () => {
             >
                 <DialogTitle>
                     <Typography variant="h5" component="div" sx={{ fontWeight: 600 }}>
-                        맞춤형 헤어스타일 추천
+                        {getOccasionName()} 상황의 스타일 시뮬레이션
                     </Typography>
                 </DialogTitle>
                 <DialogContent>
                     <Grid container spacing={3}>
                         <Grid item xs={12} md={6}>
                             <img
-                                src={uploadedImage}
-                                alt="Your face"
+                                src={uploadedImage || savedHairStyleImage}
+                                alt="Original image"
                                 style={{
-                                    width: '100%',
+                                    maxWidth: '100%',
+                                    maxHeight: '250px', // 300px에서 250px로 줄임
                                     borderRadius: '16px',
                                     boxShadow: '0 5px 15px rgba(0, 0, 0, 0.1)'
                                 }}
                             />
+
                             <Typography variant="body2" color="text.secondary" sx={{ mt: 1, textAlign: 'center' }}>
                                 원본 이미지
                             </Typography>
@@ -486,12 +500,12 @@ const TPOStyleWizard = () => {
                                     height: '100%',
                                     minHeight: 300
                                 }}>
-                                    <CircularProgress color="primary" sx={{ mb: 3 }} />
+                                    <CircularProgress color="info" sx={{ mb: 3 }} />
                                     <Typography variant="h6" gutterBottom>
-                                        AI가 분석 중입니다...
+                                        배경 적용 중입니다...
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary">
-                                        {getOccasionName()}을(를) 위한 최적의 헤어스타일을 생성하고 있습니다.
+                                        {getOccasionName()} 상황의 {getBackgroundName()} 배경에 이미지를 합성하고 있습니다.
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
                                         잠시만 기다려주세요. 약 10-20초 정도 소요됩니다.
@@ -503,7 +517,7 @@ const TPOStyleWizard = () => {
                                     {simulationResult.image_url || simulationResult.result_image ? (
                                         <img
                                             src={simulationResult.image_url || `data:image/jpeg;base64,${simulationResult.result_image}`}
-                                            alt="AI 생성 헤어스타일"
+                                            alt="배경 적용 이미지"
                                             style={{
                                                 width: '100%',
                                                 borderRadius: '16px',
@@ -518,35 +532,34 @@ const TPOStyleWizard = () => {
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
-                                            backgroundColor: 'rgba(156, 39, 176, 0.1)',
+                                            backgroundColor: 'rgba(33, 150, 243, 0.1)',
                                             mb: 2
                                         }}>
-                                            <Typography variant="body1" color="primary">
+                                            <Typography variant="body1" color="info.main">
                                                 API 연동 후 이미지가 표시됩니다
                                             </Typography>
                                         </Box>
                                     )}
 
                                     <Typography variant="body2" color="text.secondary" sx={{ mt: 1, textAlign: 'center' }}>
-                                        AI 생성 이미지
+                                        배경 적용 이미지
                                     </Typography>
 
                                     <Box sx={{ mt: 3 }}>
                                         <Typography variant="h6" gutterBottom>
-                                            {getOccasionName()}을(를) 위한 추천 스타일
+                                            {getOccasionName()} + {getBackgroundName()} 스타일
                                         </Typography>
 
-                                        {simulationResult.style_info && (
+                                        {simulationResult.background_info && (
                                             <Box sx={{ mt: 2 }}>
                                                 <Typography variant="body1" paragraph>
-                                                    {simulationResult.style_info.description ||
-                                                        `${getOccasionName()}에 어울리는 ${selectedHairLength === 'short' ? '숏' :
-                                                            selectedHairLength === 'medium' ? '미디엄' : '롱'} 헤어 스타일입니다.`}
+                                                    {simulationResult.background_info.description ||
+                                                        `${getOccasionName()} 상황의 ${getBackgroundName()} 배경에서의 모습입니다.`}
                                                 </Typography>
 
-                                                {simulationResult.style_info.tips && (
+                                                {simulationResult.background_info.tips && (
                                                     <Typography variant="body2" color="text.secondary">
-                                                        <strong>스타일링 팁:</strong> {simulationResult.style_info.tips}
+                                                        <strong>스타일링 팁:</strong> {simulationResult.background_info.tips}
                                                     </Typography>
                                                 )}
                                             </Box>
@@ -564,7 +577,7 @@ const TPOStyleWizard = () => {
                                     }}
                                 >
                                     <Typography variant="h6" gutterBottom>
-                                        {getOccasionName()}을(를) 위한 추천 스타일
+                                        {getOccasionName()} + {getBackgroundName()} 스타일
                                     </Typography>
                                     <Typography variant="body1" paragraph>
                                         시뮬레이션이 곧 시작됩니다...
@@ -577,19 +590,14 @@ const TPOStyleWizard = () => {
                         </Grid>
                     </Grid>
 
-                    {simulationResult && simulationResult.style_info && (
-                        <Box sx={{ mt: 4, p: 2, bgcolor: 'rgba(156, 39, 176, 0.05)', borderRadius: 2 }}>
+                    {simulationResult && simulationResult.background_info && (
+                        <Box sx={{ mt: 4, p: 2, bgcolor: 'rgba(33, 150, 243, 0.05)', borderRadius: 2 }}>
                             <Typography variant="h6" gutterBottom>
-                                추천 스타일 정보
+                                상황 및 배경 정보
                             </Typography>
                             <Typography variant="body2">
-                                얼굴형: <strong>{selectedFaceShape === 'oval' ? '계란형' :
-                                    selectedFaceShape === 'round' ? '둥근형' :
-                                        selectedFaceShape === 'square' ? '각진형' :
-                                            selectedFaceShape === 'heart' ? '하트형' : '긴형'}</strong> |
-                                헤어 길이: <strong>{selectedHairLength === 'short' ? '숏 헤어' :
-                                    selectedHairLength === 'medium' ? '미디엄 헤어' : '롱 헤어'}</strong> |
-                                상황: <strong>{getOccasionName()}</strong>
+                                상황(TPO): <strong>{getOccasionName()}</strong> |
+                                배경: <strong>{getBackgroundName()}</strong>
                             </Typography>
                         </Box>
                     )}
@@ -598,10 +606,10 @@ const TPOStyleWizard = () => {
                     <Button onClick={() => setShowResultDialog(false)}>닫기</Button>
                     <Button
                         variant="contained"
-                        color="primary"
+                        color="info"
                         disabled={isLoading || !simulationResult}
                     >
-                        스타일 저장하기
+                        이미지 저장하기
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -622,7 +630,17 @@ const TPOStyleWizard = () => {
 
             {getStepContent(activeStep)}
 
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
+            <Box sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                mt: 2, // 여백 줄이기 (4 -> 2)
+                pt: 2,
+                borderTop: '1px solid rgba(0, 0, 0, 0.1)',
+                position: 'sticky', // 고정 위치
+                bottom: 0,
+                backgroundColor: 'rgba(255, 255, 255, 0.95)', // 배경색 추가
+                zIndex: 10 // 다른 요소 위에 표시
+            }}>
                 <Button
                     color="inherit"
                     disabled={activeStep === 0}
@@ -634,14 +652,15 @@ const TPOStyleWizard = () => {
                 </Button>
                 <Button
                     variant="contained"
-                    color="primary"
+                    color="info"
                     onClick={handleNext}
                     endIcon={<NavigateNextIcon />}
                     disabled={isNextDisabled() || isLoading}
                 >
-                    {activeStep === steps.length - 1 ? '스타일 확인하기' : '다음'}
+                    {activeStep === steps.length - 1 ? '배경 적용하기' : '다음'}
                 </Button>
             </Box>
+
 
             {/* 오류 메시지 스낵바 */}
             <Snackbar
@@ -660,4 +679,4 @@ const TPOStyleWizard = () => {
     );
 };
 
-export default TPOStyleWizard;
+export default TpoBackStyle;

@@ -27,11 +27,12 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Link, useLocation } from 'react-router-dom';
 import { auth } from '../../services/firebase';
 import { logoutUser } from '../../services/auth';
+import TickerSlider from './TickerSlider';
 
 // 헤더 AppBar 스타일 - 스크롤에 따라 보이거나 숨김
 const StyledAppBar = styled(AppBar)(({ theme, scrolled }) => ({
     background: scrolled ? 'rgba(255, 255, 255, 0.98)' : 'transparent',
-    boxShadow: scrolled ? '0px 1px 10px rgba(0, 0, 0, 0.08)' : 'none',
+    boxShadow: scrolled ? '0px 1px 10px rgba(0, 0, 0, 0.05)' : 'none',
     color: theme.palette.text.primary,
     transition: 'all 0.3s ease',
     visibility: scrolled ? 'visible' : 'hidden',
@@ -43,27 +44,28 @@ const StyledAppBar = styled(AppBar)(({ theme, scrolled }) => ({
     right: 0,
     zIndex: 1100,
     backdropFilter: 'blur(8px)',
-    height: '64px',
+    height: '72px', // 높이 증가
     '& + *': { // 헤더 다음에 오는 모든 요소에 패딩 추가
-        paddingTop: scrolled ? '64px' : 0,
+        paddingTop: scrolled ? '72px' : 0, // 높이에 맞춰 패딩 조정
         transition: 'padding-top 0.3s ease',
     },
 }));
 
-// 로고 타이포그래피 - 미니멀한 스타일
+// 로고 타이포그래피 - 우아한 스타일로 업데이트
 const Logo = styled(Typography)(({ theme }) => ({
-    fontWeight: 700,
-    fontSize: '1.4rem',
+    fontWeight: 500,
+    fontSize: '1.5rem',
     color: '#000',
-    letterSpacing: '0.02em',
+    letterSpacing: '0.12em', // 더 넓은 자간
     textDecoration: 'none',
-    fontFamily: "'Pretendard', 'Noto Sans KR', sans-serif",
+    fontFamily: "'Didot', 'Playfair Display', 'Pretendard', serif", // 고급스러운 폰트
+    fontStyle: 'italic',
     textTransform: 'uppercase',
 }));
 
 // 네비게이션 버튼 - 드롭다운 스타일
 const NavItem = styled(Box)(({ theme }) => ({
-    margin: theme.spacing(0, 1.5),
+    margin: theme.spacing(0, 2.2), // 여백 증가
     position: 'relative',
     '&:hover': {
         '& .MuiBox-root': {
@@ -74,16 +76,18 @@ const NavItem = styled(Box)(({ theme }) => ({
     }
 }));
 
-// 네비게이션 텍스트 - 링크 포함
+// 네비게이션 텍스트 - 링크 포함, 첫 번째 스크린샷처럼 업데이트
 const NavText = styled(Typography)(({ theme, active, component, to }) => ({
     color: active ? '#000' : '#555',
-    fontWeight: active ? 500 : 400,
-    fontSize: '0.9rem',
+    fontWeight: 400,
+    fontSize: '0.95rem', // 폰트 크기 조정
     padding: theme.spacing(1, 1),
-    letterSpacing: '0.02em',
+    letterSpacing: '0.12em', // 자간 더 넓게
     cursor: 'pointer',
     textDecoration: 'none',
     display: 'block',
+    fontFamily: "'Montserrat', 'Pretendard', sans-serif", // 고급스러운 산세리프 폰트
+    textTransform: 'uppercase', // 대문자로 변환
     '&:hover': {
         color: '#000',
     }
@@ -95,7 +99,7 @@ const DropdownMenu = styled(Box)(({ theme }) => ({
     top: '100%',
     left: 0,
     backgroundColor: 'rgba(255, 255, 255, 0.98)',
-    minWidth: '180px',
+    minWidth: '200px', // 너비 증가
     padding: theme.spacing(1.5, 0),
     visibility: 'hidden',
     opacity: 0,
@@ -108,7 +112,9 @@ const DropdownMenu = styled(Box)(({ theme }) => ({
 // 드롭다운 메뉴 아이템
 const DropdownItem = styled(Typography)(({ theme }) => ({
     padding: theme.spacing(0.8, 1.5),
-    fontSize: '0.85rem',
+    fontSize: '0.9rem',
+    letterSpacing: '0.03em', // 자간 추가
+    fontFamily: "'Montserrat', 'Pretendard', sans-serif", // 일관된 폰트
     color: '#555',
     cursor: 'pointer',
     transition: 'all 0.2s ease',
@@ -121,14 +127,14 @@ const DropdownItem = styled(Typography)(({ theme }) => ({
     }
 }));
 
-// 로그인 버튼 - 미니멀 스타일
+// 로그인 버튼 - 우아한 스타일로 업데이트
 const LoginButton = styled(Button)(({ theme }) => ({
     borderRadius: 0,
-    padding: '8px 16px',
+    padding: '8px 18px', // 패딩 증가
     fontWeight: 400,
     fontSize: '0.9rem',
-    letterSpacing: '0.02em',
-    textTransform: 'none',
+    letterSpacing: '0.12em', // 자간 더 넓게
+    textTransform: 'uppercase', // 대문자로 변경
     minWidth: 'auto',
     color: '#000',
     backgroundColor: 'transparent',
@@ -136,6 +142,7 @@ const LoginButton = styled(Button)(({ theme }) => ({
     position: 'relative',
     overflow: 'hidden',
     transition: 'all 0.3s ease',
+    fontFamily: "'Montserrat', 'Pretendard', sans-serif", // 일관된 폰트
     '&::after': {
         content: '""',
         position: 'absolute',
@@ -154,29 +161,59 @@ const LoginButton = styled(Button)(({ theme }) => ({
     }
 }));
 
-// 회원가입 버튼 - 미니멀 스타일
+// 회원가입 버튼 - 로그인 버튼과 동일한 스타일로 업데이트
 const RegisterButton = styled(Button)(({ theme }) => ({
     borderRadius: 0,
-    padding: '8px 16px',
-    marginLeft: theme.spacing(1.5),
+    padding: '8px 18px',
+    marginLeft: theme.spacing(2.5),
     fontWeight: 400,
     fontSize: '0.9rem',
-    letterSpacing: '0.02em',
-    textTransform: 'none',
+    letterSpacing: '0.12em',
+    textTransform: 'uppercase',
     minWidth: 'auto',
-    color: '#fff',
-    backgroundColor: '#000',
-    border: '1px solid #000',
+    color: '#000',
+    backgroundColor: 'transparent',
+    border: 'none',
+    position: 'relative',
+    overflow: 'hidden',
     transition: 'all 0.3s ease',
+    fontFamily: "'Montserrat', 'Pretendard', sans-serif",
+    '&::after': {
+        content: '""',
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        width: '0',
+        height: '1px',
+        background: '#000',
+        transition: 'width 0.3s ease',
+    },
     '&:hover': {
         backgroundColor: 'transparent',
-        color: '#000',
+        '&::after': {
+            width: '100%',
+        }
     }
+}));
+const TryBadge = styled(Box)(({ theme }) => ({
+    position: 'absolute',
+    bottom: -32, // 버튼 아래에 위치
+    left: '50%', // 중앙 정렬
+    transform: 'translateX(-50%)', // 중앙 정렬 보정
+    backgroundColor: '#666', // 회색 배경
+    color: 'white',
+    fontSize: '0.75rem',
+    fontWeight: 500,
+    padding: '3px 10px',
+    borderRadius: '4px',
+    letterSpacing: '0.05em',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.15)',
+    fontFamily: "'Montserrat', 'Pretendard', sans-serif",
 }));
 
 // 모바일 메뉴 아이템
 const MobileNavItem = styled(ListItemButton)(({ theme, active }) => ({
-    padding: theme.spacing(1, 2),
+    padding: theme.spacing(1.2, 2), // 패딩 증가
     borderLeft: active ? '2px solid #000' : '2px solid transparent',
     transition: 'all 0.3s ease',
     '&:hover': {
@@ -185,26 +222,17 @@ const MobileNavItem = styled(ListItemButton)(({ theme, active }) => ({
     }
 }));
 
-// 메뉴 구조 데이터
+// 메뉴 구조 데이터 - About 드롭다운 메뉴 항목 변경
 const menuItems = [
     {
         title: '서비스 소개',
         path: '/about',
         submenu: [
-            { title: '서비스 소개', path: '/about' },
-            { title: '기업 스토리', path: '/about/story' },
-            { title: '회사 연혁', path: '/about/history' },
-            { title: '공지사항', path: '/about/notice' }
-        ]
-    },
-    {
-        title: '헤어스타일',
-        path: '/styles',
-        submenu: [
-            { title: '헤어 컷', path: '/styles/haircut' },
-            { title: '헤어 펌', path: '/styles/perm' },
-            { title: '헤어 컬러', path: '/styles/color' },
-            { title: '헤어 케어', path: '/styles/care' }
+            { title: '후기', path: '/about/reviews' },
+            { title: '룩북', path: '/about/lookbook' },
+            { title: '사용 설명서', path: '/about/manual' },
+            { title: '자주 묻는 질문', path: '/about/faq' },
+            { title: '이용 가이드', path: '/about/guide' }
         ]
     },
     {
@@ -227,6 +255,7 @@ const Header = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const location = useLocation();
     const user = auth.currentUser;
+    const isHomePage = location.pathname === '/';
 
     // 현재 경로가 메뉴 항목 페이지인지 확인하는 함수
     const isMenuPage = () => {
@@ -291,6 +320,7 @@ const Header = () => {
 
     // 현재 경로가 해당 메뉴 항목 또는 하위 메뉴 항목의 경로와 일치하는지 확인
     const isActive = (item) => {
+        if (!item) return false; // item이 undefined인 경우 처리
         if (location.pathname === item.path) return true;
 
         if (item.submenu) {
@@ -324,6 +354,9 @@ const Header = () => {
                         primaryTypographyProps={{
                             fontWeight: location.pathname === '/' ? 500 : 400,
                             fontSize: '0.95rem',
+                            letterSpacing: '0.03em', // 자간 추가
+                            fontFamily: "'Montserrat', 'Pretendard', sans-serif", // 폰트 통일
+                            textTransform: 'uppercase', // 대문자로 통일
                         }}
                     />
                 </MobileNavItem>
@@ -340,6 +373,9 @@ const Header = () => {
                                 primaryTypographyProps={{
                                     fontWeight: isActive(item) ? 500 : 400,
                                     fontSize: '0.95rem',
+                                    letterSpacing: '0.03em', // 자간 추가
+                                    fontFamily: "'Montserrat', 'Pretendard', sans-serif", // 폰트 통일
+                                    textTransform: 'uppercase', // 대문자로 통일
                                 }}
                             />
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -356,7 +392,9 @@ const Header = () => {
                                         p: 0.5,
                                         mr: 1,
                                         color: '#555',
-                                        textTransform: 'none',
+                                        textTransform: 'uppercase', // 대문자로 통일
+                                        letterSpacing: '0.03em', // 자간 추가
+                                        fontFamily: "'Montserrat', 'Pretendard', sans-serif", // 폰트 통일
                                         '&:hover': {
                                             backgroundColor: 'transparent',
                                             color: '#000',
@@ -393,6 +431,8 @@ const Header = () => {
                                                 fontSize: '0.85rem',
                                                 color: location.pathname === subItem.path ? '#000' : '#666',
                                                 fontWeight: location.pathname === subItem.path ? 500 : 400,
+                                                letterSpacing: '0.03em', // 자간 추가
+                                                fontFamily: "'Montserrat', 'Pretendard', sans-serif", // 폰트 통일
                                             }}
                                         />
                                     </ListItemButton>
@@ -422,10 +462,15 @@ const Header = () => {
                                 {user.email.charAt(0).toUpperCase()}
                             </Avatar>
                             <Box>
-                                <Typography variant="body2" fontWeight={500} fontSize="0.9rem">
+                                <Typography variant="body2" fontWeight={500} fontSize="0.9rem"
+                                    fontFamily="'Montserrat', 'Pretendard', sans-serif"
+                                    letterSpacing="0.03em">
                                     {user.displayName || '사용자'}
                                 </Typography>
-                                <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8rem' }}>
+                                <Typography variant="body2" color="text.secondary" sx={{
+                                    fontSize: '0.8rem',
+                                    fontFamily: "'Montserrat', 'Pretendard', sans-serif",
+                                }}>
                                     {user.email}
                                 </Typography>
                             </Box>
@@ -441,6 +486,9 @@ const Header = () => {
                                 fontSize: '0.9rem',
                                 padding: '8px 0',
                                 color: '#555',
+                                letterSpacing: '0.03em', // 자간 추가
+                                fontFamily: "'Montserrat', 'Pretendard', sans-serif", // 폰트 통일
+                                textTransform: 'uppercase', // 대문자로 통일
                                 '&:hover': {
                                     backgroundColor: 'transparent',
                                     textDecoration: 'underline',
@@ -477,14 +525,86 @@ const Header = () => {
 
     return (
         <>
+            {/* 메인 페이지에서만 상단 티커 슬라이더 표시 */}
+            {isHomePage && <TickerSlider />}
             {/* 스크롤에 따라 등장하는 헤더 */}
             <StyledAppBar scrolled={scrolled ? 1 : 0}>
                 <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3 } }}>
-                    <Toolbar disableGutters sx={{ height: '64px', minHeight: '64px' }}>
-                        <Logo variant="h6" component={Link} to="/">
-                            AiHairSolution
-                        </Logo>
 
+                    <Toolbar disableGutters sx={{ height: '72px', minHeight: '72px' }}>
+                        {/* 왼쪽 메뉴 영역 */}
+                        {!isMobile && (
+                            <Box sx={{ display: 'flex', alignItems: 'center', width: '33%' }}>
+                                <NavItem>
+                                    <NavText
+                                        active={location.pathname === '/' ? 1 : 0}
+                                        component={Link}
+                                        to="/"
+                                    >
+                                        Home
+                                    </NavText>
+                                </NavItem>
+                                <NavItem>
+                                    <NavText
+                                        active={isActive(menuItems[0]) ? 1 : 0}
+                                        component={Link}
+                                        to={menuItems[0].path}
+                                    >
+                                        About
+                                    </NavText>
+                                    <DropdownMenu className="MuiBox-root">
+                                        {menuItems[0].submenu.map((subItem, subIndex) => (
+                                            <DropdownItem
+                                                key={subIndex}
+                                                component={Link}
+                                                to={subItem.path}
+                                            >
+                                                {subItem.title}
+                                            </DropdownItem>
+                                        ))}
+                                    </DropdownMenu>
+                                </NavItem>
+                                <NavItem>
+                                    <NavText
+                                        active={isActive(menuItems[1]) ? 1 : 0}
+                                        component={Link}
+                                        to={menuItems[1].path}
+                                    >
+                                        Salon
+                                    </NavText>
+                                    <DropdownMenu className="MuiBox-root">
+                                        {menuItems[1].submenu.map((subItem, subIndex) => (
+                                            <DropdownItem
+                                                key={subIndex}
+                                                component={Link}
+                                                to={subItem.path}
+                                            >
+                                                {subItem.title}
+                                            </DropdownItem>
+                                        ))}
+                                    </DropdownMenu>
+                                </NavItem>
+                            </Box>
+                        )}
+
+                        {/* 중앙 로고 영역 */}
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            width: isMobile ? 'auto' : '33%'
+                        }}>
+                            <Logo
+                                variant="h6"
+                                component={Link}
+                                to="/"
+                                sx={{ textAlign: 'center' }}
+                            >
+                                AIHAIRSOLUTION
+                            </Logo>
+                        </Box>
+
+                        {/* 오른쪽 로그인/회원가입 영역 */}
                         {isMobile ? (
                             <IconButton
                                 edge="end"
@@ -499,135 +619,77 @@ const Header = () => {
                                 <MenuIcon />
                             </IconButton>
                         ) : (
-                            <Box sx={{ ml: 5, display: 'flex', flexGrow: 1, alignItems: 'center' }}>
-                                <NavItem>
-                                    <NavText
-                                        active={location.pathname === '/' ? 1 : 0}
-                                        component={Link}
-                                        to="/"
-                                    >
-                                        홈
-                                    </NavText>
-                                </NavItem>
-
-                                {/* 드롭다운 메뉴 */}
-                                {menuItems.map((item, index) => (
-                                    <NavItem key={index}>
-                                        {/* 메인 메뉴 항목에 링크 기능 추가 */}
-                                        <NavText
-                                            active={isActive(item) ? 1 : 0}
-                                            component={Link}
-                                            to={item.path}
+                            <Box sx={{
+                                display: 'flex',
+                                justifyContent: 'flex-end',
+                                alignItems: 'center',
+                                width: '33%'
+                            }}>
+                                {user ? (
+                                    <>
+                                        <Button
+                                            color="inherit"
+                                            onClick={handleMenu}
+                                            sx={{
+                                                fontSize: '0.95rem',
+                                                fontWeight: 400,
+                                                textTransform: 'uppercase',
+                                                letterSpacing: '0.05em',
+                                                fontFamily: "'Montserrat', 'Pretendard', sans-serif",
+                                                minWidth: 'auto',
+                                                p: 1,
+                                            }}
+                                            disableRipple
                                         >
-                                            {item.title}
-                                        </NavText>
-                                        <DropdownMenu className="MuiBox-root">
-                                            {item.submenu.map((subItem, subIndex) => (
-                                                <DropdownItem
-                                                    key={subIndex}
-                                                    component={Link}
-                                                    to={subItem.path}
-                                                >
-                                                    {subItem.title}
-                                                </DropdownItem>
-                                            ))}
-                                        </DropdownMenu>
-                                    </NavItem>
-                                ))}
-
-                                <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
-                                    {user ? (
-                                        <>
-                                            <Button
-                                                color="inherit"
-                                                onClick={handleMenu}
-                                                sx={{
-                                                    fontSize: '0.9rem',
-                                                    fontWeight: 400,
-                                                    textTransform: 'none',
-                                                    minWidth: 'auto',
-                                                    p: 1,
-                                                }}
-                                                disableRipple
-                                            >
-                                                {user.displayName || '사용자'}
-                                            </Button>
-                                            <Menu
-                                                id="menu-appbar"
-                                                anchorEl={anchorEl}
-                                                anchorOrigin={{
-                                                    vertical: 'bottom',
-                                                    horizontal: 'right',
-                                                }}
-                                                keepMounted
-                                                transformOrigin={{
-                                                    vertical: 'top',
-                                                    horizontal: 'right',
-                                                }}
-                                                open={Boolean(anchorEl)}
-                                                onClose={handleClose}
-                                                PaperProps={{
-                                                    elevation: 1,
-                                                    sx: {
-                                                        borderRadius: 0,
-                                                        minWidth: '150px',
-                                                        mt: 1,
-                                                        border: '1px solid #eee',
-                                                    },
-                                                }}
-                                            >
-                                                <MenuItem
-                                                    component={Link}
-                                                    to="/profile"
-                                                    onClick={handleClose}
-                                                    sx={{
-                                                        fontSize: '0.9rem',
-                                                        py: 1,
-                                                    }}
-                                                >
-                                                    프로필
-                                                </MenuItem>
-                                                <MenuItem
-                                                    component={Link}
-                                                    to="/my-styles"
-                                                    onClick={handleClose}
-                                                    sx={{
-                                                        fontSize: '0.9rem',
-                                                        py: 1,
-                                                    }}
-                                                >
-                                                    나의 스타일
-                                                </MenuItem>
-                                                <Divider sx={{ my: 0.5 }} />
-                                                <MenuItem
-                                                    onClick={handleLogout}
-                                                    sx={{
-                                                        fontSize: '0.9rem',
-                                                        py: 1,
-                                                    }}
-                                                >
-                                                    로그아웃
-                                                </MenuItem>
-                                            </Menu>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <LoginButton
-                                                component={Link}
-                                                to="/login"
-                                                disableRipple
-                                            >
-                                                로그인
-                                            </LoginButton>
-                                            <RegisterButton
-                                                component={Link}
-                                                to="/register"
-                                            >
-                                                회원가입
-                                            </RegisterButton>
-                                        </>
-                                    )}
-                                </Box>
+                                            {user.displayName || '사용자'}
+                                        </Button>
+                                        <Menu
+                                            id="menu-appbar"
+                                            anchorEl={anchorEl}
+                                            anchorOrigin={{
+                                                vertical: 'bottom',
+                                                horizontal: 'right',
+                                            }}
+                                            keepMounted
+                                            transformOrigin={{
+                                                vertical: 'top',
+                                                horizontal: 'right',
+                                            }}
+                                            open={Boolean(anchorEl)}
+                                            onClose={handleClose}
+                                            PaperProps={{
+                                                elevation: 1,
+                                                sx: {
+                                                    borderRadius: 0,
+                                                    minWidth: '150px',
+                                                    mt: 1,
+                                                    border: '1px solid #eee',
+                                                },
+                                            }}
+                                        >
+                                            {/* 메뉴 항목 유지 */}
+                                        </Menu>
+                                    </>
+                                ) : (
+                                    <>
+                                        <LoginButton
+                                            component={Link}
+                                            to="/login"
+                                            disableRipple
+                                        >
+                                            Login
+                                        </LoginButton>
+                                        <LoginButton
+                                            component={Link}
+                                            to="/register"
+                                            disableRipple
+                                            sx={{ ml: 2.5 }}
+                                        >
+                                            Join
+                                            <TryBadge>Try!</TryBadge>
+                                        </LoginButton>
+                                    </>
+                                )}
                             </Box>
                         )}
                     </Toolbar>

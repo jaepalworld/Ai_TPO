@@ -3,32 +3,32 @@ import { Box, Container, Typography, Button, Grid, Paper, Modal } from '@mui/mat
 import { styled } from '@mui/material/styles';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CloseIcon from '@mui/icons-material/Close';
-import TpoHairStyle from './TpoHairStyle'; // 위자드 컴포넌트 임포트
+import TpoBackStyle from './TpoBackStyle';
 
-// 기존 스타일링된 컴포넌트들은 그대로 유지
+// 스타일링된 컴포넌트들
 const HeroWrapper = styled(Box)(({ theme }) => ({
     position: 'relative',
     overflow: 'hidden',
     padding: theme.spacing(10, 0, 8),
-    background: 'linear-gradient(135deg, #f5f7fa 0%, #fcfcfc 100%)',
+    background: 'linear-gradient(135deg, #fcfcfc 0%, #f5f7fa 100%)',
     '&::before': {
         content: '""',
         position: 'absolute',
         top: 0,
-        right: 0,
+        left: 0,
         width: '50%',
         height: '100%',
-        background: 'radial-gradient(circle, rgba(156, 39, 176, 0.1) 0%, rgba(255, 255, 255, 0) 70%)',
+        background: 'radial-gradient(circle, rgba(33, 150, 243, 0.1) 0%, rgba(255, 255, 255, 0) 70%)',
         zIndex: 0,
     },
     '&::after': {
         content: '""',
         position: 'absolute',
         bottom: 0,
-        left: 0,
+        right: 0,
         width: '60%',
         height: '60%',
-        background: 'radial-gradient(circle, rgba(255, 64, 129, 0.08) 0%, rgba(255, 255, 255, 0) 70%)',
+        background: 'radial-gradient(circle, rgba(66, 165, 245, 0.08) 0%, rgba(255, 255, 255, 0) 70%)',
         zIndex: 0,
     },
 }));
@@ -47,8 +47,8 @@ const StyledImagePlaceholder = styled(Paper)(({ theme }) => ({
     borderRadius: 24,
     overflow: 'hidden',
     position: 'relative',
-    backgroundImage: 'linear-gradient(45deg, #9c27b0 0%, #ff4081 100%)',
-    boxShadow: '0 20px 40px rgba(156, 39, 176, 0.2)',
+    backgroundImage: 'linear-gradient(45deg, #2196f3 0%, #42a5f5 100%)',
+    boxShadow: '0 20px 40px rgba(33, 150, 243, 0.2)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -65,7 +65,7 @@ const StyledImagePlaceholder = styled(Paper)(({ theme }) => ({
 }));
 
 const TextHighlight = styled('span')(({ theme }) => ({
-    color: theme.palette.primary.main,
+    color: theme.palette.info.main,
     position: 'relative',
     '&::after': {
         content: '""',
@@ -74,7 +74,7 @@ const TextHighlight = styled('span')(({ theme }) => ({
         left: 0,
         width: '100%',
         height: '30%',
-        background: 'rgba(156, 39, 176, 0.15)',
+        background: 'rgba(33, 150, 243, 0.15)',
         zIndex: -1,
         borderRadius: 4,
     },
@@ -86,7 +86,7 @@ const ActionButton = styled(Button)(({ theme }) => ({
     fontSize: '1.1rem',
     marginTop: theme.spacing(4),
     marginRight: theme.spacing(2),
-    boxShadow: '0 10px 20px rgba(156, 39, 176, 0.2)',
+    boxShadow: '0 10px 20px rgba(33, 150, 243, 0.2)',
 }));
 
 const OutlinedActionButton = styled(Button)(({ theme }) => ({
@@ -94,10 +94,10 @@ const OutlinedActionButton = styled(Button)(({ theme }) => ({
     height: 56,
     fontSize: '1.1rem',
     marginTop: theme.spacing(4),
-    border: `2px solid ${theme.palette.primary.main}`,
+    border: `2px solid ${theme.palette.info.main}`,
     '&:hover': {
-        border: `2px solid ${theme.palette.primary.dark}`,
-        background: 'rgba(156, 39, 176, 0.05)',
+        border: `2px solid ${theme.palette.info.dark}`,
+        background: 'rgba(33, 150, 243, 0.05)',
     },
 }));
 
@@ -116,8 +116,8 @@ const ModalContent = styled(Box)(({ theme }) => ({
     padding: theme.spacing(0),
     position: 'relative',
     width: '100%',
-    maxWidth: 1000,
-    maxHeight: '90vh',
+    maxWidth: 800, // 1000에서 800으로 줄임
+    maxHeight: '85vh', // 90vh에서 85vh로 줄임
     overflow: 'auto',
 }));
 
@@ -150,7 +150,7 @@ const ImageOverlay = styled(Box)(({ theme }) => ({
     },
 }));
 
-const HeroSection = () => {
+const HeroBackSection = () => {
     // 모달 상태 관리
     const [open, setOpen] = useState(false);
 
@@ -166,57 +166,7 @@ const HeroSection = () => {
         <HeroWrapper>
             <Container maxWidth="lg">
                 <Grid container spacing={6} alignItems="center">
-                    <Grid item xs={12} md={6} sx={{ zIndex: 1 }}>
-                        <Typography
-                            component="h1"
-                            variant="h2"
-                            gutterBottom
-                            sx={{
-                                fontWeight: 700,
-                                lineHeight: 1.2
-                            }}
-                        >
-                            어떤 자리든 빛나는
-
-                            <br />
-                            <TextHighlight>AI 헤어 디자인</TextHighlight>
-                        </Typography>
-                        <Typography
-                            variant="h6"
-                            sx={{
-                                color: 'text.secondary',
-                                lineHeight: 1.6,
-                                mb: 3,
-                                maxWidth: 500
-                            }}
-                        >
-                            시간(Time), 장소(Place), 상황(Occasion)에 맞는<br />
-                            최적의 스타일을 제안합니다.<br />
-                            중요한 미팅, 특별한 데이트, 캐주얼한 일상까지<br />
-                            - 모든 순간에 어울리는 완벽한 헤어스타일로 <br />
-                            당신의 매력을 높여드립니다
-                        </Typography>
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-                            <ActionButton
-                                variant="contained"
-                                color="primary"
-                                size="large"
-                                endIcon={<ArrowForwardIcon />}
-                                onClick={handleOpen}
-                            >
-                                무료로 시작하기
-                            </ActionButton>
-                            <OutlinedActionButton
-                                variant="outlined"
-                                color="primary"
-                                size="large"
-                            >
-                                더 알아보기
-                            </OutlinedActionButton>
-                        </Box>
-
-
-                    </Grid>
+                    {/* 좌측에 이미지 영역 배치 */}
                     <Grid item xs={12} md={6} sx={{ zIndex: 1 }}>
                         <ImageContainer>
                             <StyledImagePlaceholder elevation={10}>
@@ -234,34 +184,85 @@ const HeroSection = () => {
                                             zIndex: 1
                                         }}
                                     >
-                                        AI 헤어스타일 시뮬레이션
+                                        AI 배경스타일 시뮬레이션
                                     </Typography>
                                     <ImageOverlay>
                                         <Button
                                             variant="contained"
-                                            color="primary"
+                                            color="info"
                                             onClick={handleOpen}
                                             sx={{ mb: 2 }}
                                         >
                                             지금 시작하기
                                         </Button>
                                         <Typography variant="body2">
-                                            TPO에 맞는 헤어스타일 추천받기
+                                            다양한 상황별 스타일 미리보기
                                         </Typography>
                                     </ImageOverlay>
                                 </Box>
                             </StyledImagePlaceholder>
                         </ImageContainer>
                     </Grid>
+
+                    {/* 우측에 텍스트 영역 배치 */}
+                    <Grid item xs={12} md={6} sx={{ zIndex: 1 }}>
+                        <Typography
+                            component="h2"
+                            variant="h2"
+                            gutterBottom
+                            sx={{
+                                fontWeight: 700,
+                                lineHeight: 1.2
+                            }}
+                        >
+                            확인 하셨나요?
+                            <br />
+                            <TextHighlight>TPO</TextHighlight>
+
+                        </Typography>
+                        <Typography
+                            variant="h6"
+                            sx={{
+                                color: 'text.secondary',
+                                lineHeight: 1.6,
+                                mb: 3,
+                                maxWidth: 500
+                            }}
+                        >
+                            직장, 데이트, 파티, 일상 등<br />
+                            원하는 장소를 선택하여<br />
+                            당신의 스타일을 미리 체험해보세요.<br />
+                            - 어떤 환경에서도 돋보이는 스타일을<br />
+                            미리 경험할 수 있습니다
+                        </Typography>
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+                            <ActionButton
+                                variant="contained"
+                                color="info"
+                                size="large"
+                                endIcon={<ArrowForwardIcon />}
+                                onClick={handleOpen}
+                            >
+                                배경 선택하기
+                            </ActionButton>
+                            <OutlinedActionButton
+                                variant="outlined"
+                                color="info"
+                                size="large"
+                            >
+                                더 알아보기
+                            </OutlinedActionButton>
+                        </Box>
+                    </Grid>
                 </Grid>
             </Container>
 
-            {/* TPO 스타일 추천 위자드 모달 */}
+            {/* 배경 스타일 시뮬레이션 위자드 모달 */}
             <StyledModal
                 open={open}
                 onClose={handleClose}
-                aria-labelledby="style-wizard-modal"
-                aria-describedby="ai-hairstyle-recommendation-wizard"
+                aria-labelledby="background-style-wizard-modal"
+                aria-describedby="ai-background-style-simulation-wizard"
             >
                 <ModalContent>
                     <ModalCloseButton color="inherit" onClick={handleClose}>
@@ -269,11 +270,11 @@ const HeroSection = () => {
                     </ModalCloseButton>
                     <Box sx={{ p: 3 }}>
                         <Typography variant="h4" component="h2" gutterBottom sx={{ fontWeight: 600 }}>
-                            TPO 맞춤 헤어스타일 추천
+                            상황별 배경 스타일 시뮬레이션
                         </Typography>
                     </Box>
                     <Box sx={{ px: 3, pb: 3 }}>
-                        <TpoHairStyle />
+                        <TpoBackStyle />
                     </Box>
                 </ModalContent>
             </StyledModal>
@@ -281,4 +282,4 @@ const HeroSection = () => {
     );
 };
 
-export default HeroSection;
+export default HeroBackSection;
