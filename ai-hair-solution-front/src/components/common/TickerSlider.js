@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import { Box } from '@mui/material';
-import { useLocation } from 'react-router-dom';
+// 더 이상 useLocation이 필요하지 않음
+// import { useLocation } from 'react-router-dom';
 
-// 티커 컨테이너 - 부드러운 회색 배경으로 변경
 const TickerContainer = styled(Box)(({ theme }) => ({
     width: '100% !important',
     overflow: 'hidden !important',
-    backgroundColor: '#222222 !important', // 검은색에서 부드러운 다크 그레이로 변경
+    backgroundColor: '#222222 !important',
     color: '#f5f5f5 !important',
-    height: '45px !important',  // 높이 약간 더 증가
+    height: '45px !important',
     display: 'flex !important',
     alignItems: 'center !important',
-    position: 'relative !important',
-    zIndex: '1200 !important',
+    // 항상 고정 위치로 설정
+    position: 'fixed !important', // 고정 위치로 변경
+    top: '0 !important',          // 항상 최상단에 위치
+    left: '0 !important',
+    right: '0 !important',
+    zIndex: '1200 !important',    // 헤더보다 높은 zIndex
     borderBottom: '1px solid rgba(255,255,255,0.08) !important',
 }));
 
@@ -52,11 +56,12 @@ const TickerItemsWrapper = styled(Box)({
 });
 
 const TickerSlider = () => {
-    const location = useLocation();
+    // useLocation은 더 이상 필요하지 않음
+    // const location = useLocation();
     const [isOddActive, setIsOddActive] = useState(true);
 
-    // 메인 페이지에서만 표시
-    const isHomePage = location.pathname === '/';
+    // 홈페이지 체크 제거 - 모든 페이지에서 표시
+    // const isHomePage = location.pathname === '/';
 
     // 모든 항목들을 하나의 배열로 관리
     const allItems = [
@@ -81,8 +86,8 @@ const TickerSlider = () => {
         };
     }, []);
 
-    // 메인 페이지가 아니면 null 반환
-    if (!isHomePage) return null;
+    // 메인 페이지 체크 조건 제거 - 항상 렌더링
+    // if (!isHomePage) return null;
 
     return (
         <TickerContainer>

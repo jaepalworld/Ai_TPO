@@ -5,20 +5,14 @@ import {
     Typography,
     Link,
     Grid,
-    Button,
-    TextField,
     Divider,
     IconButton,
-    InputAdornment,
     Paper
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import TwitterIcon from '@mui/icons-material/Twitter';
-import InstagramIcon from '@mui/icons-material/Instagram';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import YouTubeIcon from '@mui/icons-material/YouTube';
-import PinterestIcon from '@mui/icons-material/Pinterest';
-import SendIcon from '@mui/icons-material/Send';
+import BookIcon from '@mui/icons-material/Book'; // Using Book icon for Velog
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PhoneIcon from '@mui/icons-material/Phone';
 import EmailIcon from '@mui/icons-material/Email';
@@ -95,22 +89,6 @@ const SocialButton = styled(IconButton)(({ theme }) => ({
     }
 }));
 
-const StyledTextField = styled(TextField)(({ theme }) => ({
-    '& .MuiOutlinedInput-root': {
-        borderRadius: 30,
-        backgroundColor: '#fff',
-        '& fieldset': {
-            borderColor: 'rgba(0, 0, 0, 0.1)',
-        },
-        '&:hover fieldset': {
-            borderColor: theme.palette.primary.light,
-        },
-        '&.Mui-focused fieldset': {
-            borderColor: theme.palette.primary.main,
-        },
-    },
-}));
-
 const ContactItem = styled(Box)(({ theme }) => ({
     display: 'flex',
     marginBottom: theme.spacing(2),
@@ -135,7 +113,7 @@ const Footer = () => {
         <FooterWrapper>
             <Container maxWidth="lg">
                 <Grid container spacing={4}>
-                    <Grid item xs={12} sm={6} md={3}>
+                    <Grid item xs={12} sm={6} md={4}>
                         <Logo variant="h6">
                             AiHairSolution
                         </Logo>
@@ -144,25 +122,19 @@ const Footer = () => {
                             가상으로 미리 체험하고 실제 스타일링에 반영해보세요.
                         </Typography>
                         <Box sx={{ display: 'flex', mb: 3 }}>
-                            <SocialButton aria-label="facebook">
-                                <FacebookIcon />
-                            </SocialButton>
-                            <SocialButton aria-label="twitter">
-                                <TwitterIcon />
-                            </SocialButton>
-                            <SocialButton aria-label="instagram">
-                                <InstagramIcon />
-                            </SocialButton>
-                            <SocialButton aria-label="youtube">
+                            <SocialButton aria-label="youtube" component="a" href="https://www.youtube.com/@%EB%82%91%EB%8B%AC%EB%8B%AC%ED%95%98%EB%88%84" target="_blank">
                                 <YouTubeIcon />
                             </SocialButton>
-                            <SocialButton aria-label="pinterest">
-                                <PinterestIcon />
+                            <SocialButton aria-label="velog" component="a" href="https://velog.io/@cjw4032/posts" target="_blank">
+                                <BookIcon />
+                            </SocialButton>
+                            <SocialButton aria-label="github" component="a" href="https://github.com/jaepalworld/AiHairSolution" target="_blank">
+                                <GitHubIcon />
                             </SocialButton>
                         </Box>
                     </Grid>
 
-                    <Grid item xs={12} sm={6} md={3}>
+                    <Grid item xs={12} sm={6} md={4}>
                         <FooterHeading variant="h6">
                             바로가기
                         </FooterHeading>
@@ -178,76 +150,30 @@ const Footer = () => {
                         <StyledLink component={RouterLink} to="/booking">
                             예약하기
                         </StyledLink>
-                        <StyledLink component={RouterLink} to="/faq">
-                            자주 묻는 질문
-                        </StyledLink>
-                        <StyledLink component={RouterLink} to="/privacy">
-                            개인정보처리방침
-                        </StyledLink>
                     </Grid>
 
-                    <Grid item xs={12} sm={6} md={3}>
+                    <Grid item xs={12} sm={6} md={4}>
                         <FooterHeading variant="h6">
                             연락처
                         </FooterHeading>
                         <ContactItem>
                             <LocationOnIcon />
                             <Typography variant="body2" color="text.secondary">
-                                서울특별시 강남구 테헤란로 123, 4층
+                                경기도 부천시 소사본동
                             </Typography>
                         </ContactItem>
                         <ContactItem>
                             <PhoneIcon />
                             <Typography variant="body2" color="text.secondary">
-                                02-1234-5678
+                                010-3161-4032
                             </Typography>
                         </ContactItem>
                         <ContactItem>
                             <EmailIcon />
                             <Typography variant="body2" color="text.secondary">
-                                info@aihairsolution.com
+                                cjw4032@gmail.com
                             </Typography>
                         </ContactItem>
-                        <Typography variant="body2" color="text.secondary" sx={{ mt: 3 }}>
-                            운영시간: 평일 09:00 - 18:00
-                        </Typography>
-                    </Grid>
-
-                    <Grid item xs={12} sm={6} md={3}>
-                        <FooterHeading variant="h6">
-                            뉴스레터 구독
-                        </FooterHeading>
-                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                            최신 헤어 트렌드와 스타일링 팁을 받아보세요
-                        </Typography>
-                        <StyledTextField
-                            fullWidth
-                            variant="outlined"
-                            placeholder="이메일 주소"
-                            size="small"
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            edge="end"
-                                            color="primary"
-                                            sx={{
-                                                background: `linear-gradient(45deg, ${(theme) => theme.palette.primary.main} 30%, ${(theme) => theme.palette.secondary.main} 90%)`,
-                                                color: 'white',
-                                                '&:hover': {
-                                                    background: `linear-gradient(45deg, ${(theme) => theme.palette.primary.dark} 30%, ${(theme) => theme.palette.secondary.dark} 90%)`,
-                                                }
-                                            }}
-                                        >
-                                            <SendIcon fontSize="small" />
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
-                            * 구독 신청 시 개인정보처리방침에 동의하게 됩니다.
-                        </Typography>
                     </Grid>
                 </Grid>
 
@@ -260,9 +186,6 @@ const Footer = () => {
                     <Box sx={{ display: 'flex', gap: 2 }}>
                         <Link href="/terms" color="text.secondary" underline="hover" variant="body2">
                             이용약관
-                        </Link>
-                        <Link href="/privacy" color="text.secondary" underline="hover" variant="body2">
-                            개인정보처리방침
                         </Link>
                         <Link href="/contact" color="text.secondary" underline="hover" variant="body2">
                             문의하기

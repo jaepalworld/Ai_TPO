@@ -1,0 +1,159 @@
+.lookbook-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.lookbook-intro {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.category-tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.category-tab {
+    background: none;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 5px 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s;
+}
+
+.category-tab:hover {
+    color: #333;
+}
+
+.category-tab.active {
+    border-bottom: 2px solid #333;
+    font-weight: bold;
+}
+
+.lookbook-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+.style-card {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.style-card:hover {
+    transform: translateY(-10px);
+}
+
+.style-image {
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+}
+
+.style-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.style-card:hover .style-image img {
+    transform: scale(1.05);
+}
+
+.style-info {
+    padding: 20px;
+}
+
+.style-title {
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+.style-category {
+    display: inline-block;
+    font-size: 14px;
+    background-color: #f0f0f0;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+}
+
+.style-description {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.style-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.like-button {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    color: #ff4b4b;
+}
+
+.try-button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.try-button:hover {
+    background-color: #555;
+}
+
+.lookbook-cta {
+    background-color: #f9f9f9;
+    padding: 40px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.lookbook-cta h2 {
+    margin-bottom: 15px;
+}
+
+.lookbook-cta p {
+    max-width: 700px;
+    margin: 0 auto 20px;
+    color: #666;
+}
+
+.cta-button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cta-button:hover {
+    background-color: #555;
+}

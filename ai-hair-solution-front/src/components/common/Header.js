@@ -18,12 +18,17 @@ import {
     ListItemText,
     Divider,
     Collapse,
-    ListItemButton
+    ListItemButton,
+    ListItemIcon
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import PersonIcon from '@mui/icons-material/Person'; // Import for default avatar icon
+import EditIcon from '@mui/icons-material/Edit'; // Import for edit icon
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'; // Import for profile icon
+import ExitToAppIcon from '@mui/icons-material/ExitToApp'; // Import for logout icon
 import { Link, useLocation } from 'react-router-dom';
 import { auth } from '../../services/firebase';
 import { logoutUser } from '../../services/auth';
@@ -31,23 +36,26 @@ import TickerSlider from './TickerSlider';
 
 // 헤더 AppBar 스타일 - 스크롤에 따라 보이거나 숨김
 const StyledAppBar = styled(AppBar)(({ theme, scrolled }) => ({
-    background: scrolled ? 'rgba(255, 255, 255, 0.98)' : 'transparent',
-    boxShadow: scrolled ? '0px 1px 10px rgba(0, 0, 0, 0.05)' : 'none',
+    // 기본 배경은 불투명하게 유지, 스크롤 시에만 투명도 적용
+    background: scrolled ? 'rgba(255, 255, 255, 0.85)' : 'rgba(255, 255, 255, 1)',
+    boxShadow: scrolled ? '0px 2px 10px rgba(0, 0, 0, 0.08)' : 'none',
     color: theme.palette.text.primary,
     transition: 'all 0.3s ease',
-    visibility: scrolled ? 'visible' : 'hidden',
-    opacity: scrolled ? 1 : 0,
-    transform: scrolled ? 'translateY(0)' : 'translateY(-100%)',
+    // 항상 표시되도록 설정
+    visibility: 'visible',
+    opacity: 1,
+    transform: 'translateY(0)',
     position: 'fixed',
-    top: 0,
+    top: '45px', // 티커슬라이더 높이에 맞게 조정
     left: 0,
     right: 0,
-    zIndex: 1100,
-    backdropFilter: 'blur(8px)',
-    height: '72px', // 높이 증가
-    '& + *': { // 헤더 다음에 오는 모든 요소에 패딩 추가
-        paddingTop: scrolled ? '72px' : 0, // 높이에 맞춰 패딩 조정
-        transition: 'padding-top 0.3s ease',
+    zIndex: 1000, // 티커슬라이더보다 낮은 zIndex
+    // 스크롤 시에만 블러 효과 적용
+    backdropFilter: scrolled ? 'blur(8px)' : 'none',
+    height: '72px',
+    // 메인 콘텐츠 영역 패딩 설정
+    '& + *': {
+        paddingTop: '117px', // 티커슬라이더(45px) + 헤더(72px)
     },
 }));
 
@@ -195,6 +203,34 @@ const RegisterButton = styled(Button)(({ theme }) => ({
         }
     }
 }));
+
+// 프로필 아바타 스타일
+const ProfileAvatar = styled(Avatar)(({ theme }) => ({
+    width: 36,
+    height: 36,
+    backgroundColor: '#f0f0f0',
+    color: '#555',
+    border: '1px solid #ddd',
+    '& .MuiSvgIcon-root': {
+        width: 22,
+        height: 22,
+    }
+}));
+
+// 프로필 드롭다운 아바타 (더 작게)
+const MenuAvatar = styled(Avatar)(({ theme }) => ({
+    width: 24,
+    height: 24,
+    backgroundColor: '#f0f0f0',
+    color: '#555',
+    marginRight: theme.spacing(1.5),
+    border: '1px solid #ddd',
+    '& .MuiSvgIcon-root': {
+        width: 16,
+        height: 16,
+    }
+}));
+
 const TryBadge = styled(Box)(({ theme }) => ({
     position: 'absolute',
     bottom: -32, // 버튼 아래에 위치
@@ -257,6 +293,9 @@ const Header = () => {
     const user = auth.currentUser;
     const isHomePage = location.pathname === '/';
 
+    // 사용자 프로필 이미지 상태
+    const [profileImageUrl, setProfileImageUrl] = useState(null);
+
     // 현재 경로가 메뉴 항목 페이지인지 확인하는 함수
     const isMenuPage = () => {
         // 홈 페이지는 제외
@@ -274,14 +313,14 @@ const Header = () => {
 
     useEffect(() => {
         const handleScroll = () => {
-            // 메뉴 페이지일 경우 항상 헤더 표시
+            // 메뉴 페이지일 경우 항상 헤더 흐리게 표시
             if (isMenuPage()) {
                 setScrolled(true);
                 return;
             }
 
-            // 그 외의 경우 기존 로직 유지
-            if (window.scrollY > 100) {
+            // 스크롤 위치에 따라 헤더 스타일 변경 (50px 이상 스크롤 시 흐리게)
+            if (window.scrollY > 50) {
                 setScrolled(true);
             } else {
                 setScrolled(false);
@@ -295,7 +334,17 @@ const Header = () => {
         return () => {
             window.removeEventListener('scroll', handleScroll);
         };
-    }, [location.pathname]); // location.pathname이 변경될 때마다 effect 재실행
+    }, [location.pathname, isMenuPage]);
+
+
+    // 유저 프로필 이미지 체크
+    useEffect(() => {
+        if (user && user.photoURL) {
+            setProfileImageUrl(user.photoURL);
+        } else {
+            setProfileImageUrl(null);
+        }
+    }, [user]);
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -452,16 +501,11 @@ const Header = () => {
                             mb: 2,
                             p: 1,
                         }}>
-                            <Avatar sx={{
-                                mr: 2,
-                                bgcolor: '#000',
-                                width: 32,
-                                height: 32,
-                                borderRadius: 0,
-                            }}>
-                                {user.email.charAt(0).toUpperCase()}
-                            </Avatar>
-                            <Box>
+                            {/* 모바일 프로필 이미지 */}
+                            <ProfileAvatar src={profileImageUrl}>
+                                {!profileImageUrl && <PersonIcon />}
+                            </ProfileAvatar>
+                            <Box sx={{ ml: 2, flex: 1 }}>
                                 <Typography variant="body2" fontWeight={500} fontSize="0.9rem"
                                     fontFamily="'Montserrat', 'Pretendard', sans-serif"
                                     letterSpacing="0.03em">
@@ -474,29 +518,56 @@ const Header = () => {
                                     {user.email}
                                 </Typography>
                             </Box>
+                            <IconButton
+                                component={Link}
+                                to="/profile/edit"
+                                size="small"
+                                onClick={handleDrawerToggle}
+                                sx={{
+                                    color: 'text.secondary',
+                                    '&:hover': { color: 'primary.main' }
+                                }}
+                            >
+                                <EditIcon fontSize="small" />
+                            </IconButton>
                         </Box>
-                        <Button
-                            variant="text"
-                            color="inherit"
-                            fullWidth
-                            onClick={handleLogout}
-                            sx={{
-                                justifyContent: 'flex-start',
-                                fontWeight: 400,
-                                fontSize: '0.9rem',
-                                padding: '8px 0',
-                                color: '#555',
-                                letterSpacing: '0.03em', // 자간 추가
-                                fontFamily: "'Montserrat', 'Pretendard', sans-serif", // 폰트 통일
-                                textTransform: 'uppercase', // 대문자로 통일
-                                '&:hover': {
-                                    backgroundColor: 'transparent',
-                                    textDecoration: 'underline',
-                                }
-                            }}
-                        >
-                            로그아웃
-                        </Button>
+                        <Divider sx={{ mb: 1 }} />
+                        <List>
+                            <ListItemButton
+                                component={Link}
+                                to="/profile"
+                                onClick={handleDrawerToggle}
+                                sx={{ py: 1 }}
+                            >
+                                <ListItemIcon sx={{ minWidth: '32px' }}>
+                                    <AccountCircleIcon fontSize="small" />
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary="마이프로필"
+                                    primaryTypographyProps={{
+                                        fontSize: '0.9rem',
+                                        letterSpacing: '0.03em',
+                                        fontFamily: "'Montserrat', 'Pretendard', sans-serif",
+                                    }}
+                                />
+                            </ListItemButton>
+                            <ListItemButton
+                                onClick={handleLogout}
+                                sx={{ py: 1 }}
+                            >
+                                <ListItemIcon sx={{ minWidth: '32px' }}>
+                                    <ExitToAppIcon fontSize="small" />
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary="로그아웃"
+                                    primaryTypographyProps={{
+                                        fontSize: '0.9rem',
+                                        letterSpacing: '0.03em',
+                                        fontFamily: "'Montserrat', 'Pretendard', sans-serif",
+                                    }}
+                                />
+                            </ListItemButton>
+                        </List>
                     </>
                 ) : (
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
@@ -530,7 +601,6 @@ const Header = () => {
             {/* 스크롤에 따라 등장하는 헤더 */}
             <StyledAppBar scrolled={scrolled ? 1 : 0}>
                 <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3 } }}>
-
                     <Toolbar disableGutters sx={{ height: '72px', minHeight: '72px' }}>
                         {/* 왼쪽 메뉴 영역 */}
                         {!isMobile && (
@@ -627,22 +697,37 @@ const Header = () => {
                             }}>
                                 {user ? (
                                     <>
-                                        <Button
-                                            color="inherit"
+                                        <Box
                                             onClick={handleMenu}
                                             sx={{
-                                                fontSize: '0.95rem',
-                                                fontWeight: 400,
-                                                textTransform: 'uppercase',
-                                                letterSpacing: '0.05em',
-                                                fontFamily: "'Montserrat', 'Pretendard', sans-serif",
-                                                minWidth: 'auto',
-                                                p: 1,
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                cursor: 'pointer',
+                                                padding: '4px 8px',
+                                                borderRadius: '20px',
+                                                transition: 'background-color 0.2s',
+                                                '&:hover': {
+                                                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                                                }
                                             }}
-                                            disableRipple
                                         >
-                                            {user.displayName || '사용자'}
-                                        </Button>
+                                            {/* 프로필 이미지 */}
+                                            <ProfileAvatar src={profileImageUrl}>
+                                                {!profileImageUrl && <PersonIcon />}
+                                            </ProfileAvatar>
+                                            <Typography
+                                                sx={{
+                                                    ml: 1.5,
+                                                    fontSize: '0.95rem',
+                                                    fontWeight: 400,
+                                                    textTransform: 'uppercase',
+                                                    letterSpacing: '0.05em',
+                                                    fontFamily: "'Montserrat', 'Pretendard', sans-serif",
+                                                }}
+                                            >
+                                                {user.displayName || '사용자'}
+                                            </Typography>
+                                        </Box>
                                         <Menu
                                             id="menu-appbar"
                                             anchorEl={anchorEl}
@@ -661,13 +746,84 @@ const Header = () => {
                                                 elevation: 1,
                                                 sx: {
                                                     borderRadius: 0,
-                                                    minWidth: '150px',
+                                                    minWidth: '200px',
                                                     mt: 1,
                                                     border: '1px solid #eee',
                                                 },
                                             }}
                                         >
-                                            {/* 메뉴 항목 유지 */}
+                                            <Box sx={{ px: 2, py: 1.5, display: 'flex', alignItems: 'center' }}>
+                                                <MenuAvatar src={profileImageUrl} sx={{ width: 32, height: 32 }}>
+                                                    {!profileImageUrl && <PersonIcon />}
+                                                </MenuAvatar>
+                                                <Box sx={{ ml: 1.5, flex: 1 }}>
+                                                    <Typography
+                                                        sx={{
+                                                            fontSize: '0.9rem',
+                                                            fontWeight: 500,
+                                                            letterSpacing: '0.03em',
+                                                            fontFamily: "'Montserrat', 'Pretendard', sans-serif",
+                                                            lineHeight: 1.2
+                                                        }}
+                                                    >
+                                                        {user.displayName || '사용자'}
+                                                    </Typography>
+                                                    <Typography
+                                                        sx={{
+                                                            fontSize: '0.75rem',
+                                                            color: 'text.secondary',
+                                                            fontFamily: "'Montserrat', 'Pretendard', sans-serif",
+                                                        }}
+                                                    >
+                                                        {user.email}
+                                                    </Typography>
+                                                </Box>
+                                                <IconButton
+                                                    component={Link}
+                                                    to="/profile/edit"
+                                                    size="small"
+                                                    onClick={handleClose}
+                                                    sx={{
+                                                        color: 'text.secondary',
+                                                        '&:hover': { color: 'primary.main' }
+                                                    }}
+                                                >
+                                                    <EditIcon fontSize="small" />
+                                                </IconButton>
+                                            </Box>
+                                            <Divider />
+                                            <MenuItem
+                                                component={Link}
+                                                to="/profile"
+                                                onClick={handleClose}
+                                                sx={{
+                                                    py: 1.2,
+                                                    px: 2,
+                                                    fontSize: '0.85rem',
+                                                    letterSpacing: '0.03em',
+                                                    fontFamily: "'Montserrat', 'Pretendard', sans-serif",
+                                                }}
+                                            >
+                                                <ListItemIcon sx={{ minWidth: '32px' }}>
+                                                    <AccountCircleIcon fontSize="small" />
+                                                </ListItemIcon>
+                                                마이프로필
+                                            </MenuItem>
+                                            <MenuItem
+                                                onClick={handleLogout}
+                                                sx={{
+                                                    py: 1.2,
+                                                    px: 2,
+                                                    fontSize: '0.85rem',
+                                                    letterSpacing: '0.03em',
+                                                    fontFamily: "'Montserrat', 'Pretendard', sans-serif",
+                                                }}
+                                            >
+                                                <ListItemIcon sx={{ minWidth: '32px' }}>
+                                                    <ExitToAppIcon fontSize="small" />
+                                                </ListItemIcon>
+                                                로그아웃
+                                            </MenuItem>
                                         </Menu>
                                     </>
                                 ) : (
@@ -703,12 +859,13 @@ const Header = () => {
                 open={mobileOpen}
                 onClose={handleDrawerToggle}
                 ModalProps={{
-                    keepMounted: true, // 모바일 성능 향상
+                    keepMounted: true,
                 }}
                 PaperProps={{
                     sx: {
                         width: 280,
                         boxShadow: '0 0 15px rgba(0, 0, 0, 0.1)',
+                        marginTop: '45px', // 티커슬라이더 높이만큼 여백 추가
                     }
                 }}
             >
