@@ -1,27 +1,29 @@
 import React from 'react';
 import { Box, Container, Typography, Button, Grid } from '@mui/material';
-import HeroSection from '../components/home/maincollection/HeroSection';
-import HeroBackSection from '../components/home/maincollection/HeroBackSection'; // 새로 추가
 import TrendCollectionSection from '../components/home/maincollection/TrendCollectionSection';
 import HeroSlider from '../components/home/maincollection/HeroSlider';
 import LookbookSection from '../components/home/maincollection/LookbookSection';
 import FeatureSection from '../components/home/FeatureSection';
 import TestimonialSection from '../components/home/TestimonialSection';
 import NearbySalonsSection from '../components/home/NearbySalonsSection';
+import Menu from '../components/login/Menu'; // Menu 컴포넌트 추가
 
 const Main = () => {
     return (
         <Box>
+            {/* 플로팅 메뉴 추가 */}
+            <Menu />
+
             {/* 1. 당신만의 스타일을 찾아보세요 (CTA section with HeroSlider) */}
             <Box sx={{ bgcolor: 'primary.light', color: 'white' }}>
                 <HeroSlider />
             </Box>
 
             {/* 2. 당신의 스타일을 AI 헤어 디자인으로 완성하세요 (HeroSection) */}
-            <HeroSection />
+            {/* <HeroSection /> */}
 
             {/* 3. 다양한 상황에서 당신의 스타일을 확인하세요 (HeroBackSection) */}
-            <HeroBackSection />
+            {/* <HeroBackSection /> */}
 
             {/* 4. Collection (TrendCollectionSection) */}
             <TrendCollectionSection />

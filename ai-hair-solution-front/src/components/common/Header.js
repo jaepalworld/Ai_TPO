@@ -283,6 +283,7 @@ const menuItems = [
 ];
 
 const Header = () => {
+    const [kakaoUser, setKakaoUser] = useState(null); // 카카오 사용자 상태 추가
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
@@ -292,6 +293,7 @@ const Header = () => {
     const location = useLocation();
     const user = auth.currentUser;
     const isHomePage = location.pathname === '/';
+
 
     // 사용자 프로필 이미지 상태
     const [profileImageUrl, setProfileImageUrl] = useState(null);
