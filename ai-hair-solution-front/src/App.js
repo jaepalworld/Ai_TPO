@@ -25,47 +25,54 @@ import Lookbook from './components/about/Lookbook';
 // 테마 설정
 import theme from './theme';
 
+// AuthProvider 불러오기
+import { AuthProvider } from './contexts/AuthContext';
+
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Router>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            minHeight: '100vh'
-          }}
-        >
-          {/* 티커슬라이더를 모든 페이지에서 표시 */}
-          <TickerSlider />
+    <AuthProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Router>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              minHeight: '100vh'
+            }}
+          >
+            {/* 티커슬라이더를 모든 페이지에서 표시 */}
+            <TickerSlider />
 
-          {/* 헤더 컴포넌트 */}
-          <Header />
+            {/* 헤더 컴포넌트 */}
+            <Header />
 
-          {/* 메인 콘텐츠 영역 - 티커슬라이더(45px)와 헤더(72px) 높이를 고려한 패딩 */}
-          <Box component="main" sx={{
-            flexGrow: 1,
-            pt: '117px', // 45px + 72px
-            position: 'relative',
-            zIndex: 900 // 헤더와 티커보다 낮은 zIndex
-          }}>
-            <Routes>
-              <Route path="/" element={<Main />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/profile" element={<Mypage />} />
-              <Route path="/nearby-salons" element={<SalonsPage />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/about/reviews" element={<Reviews />} />
-              <Route path="/about/lookbook" element={<Lookbook />} />
-            </Routes>
+            {/* 메인 콘텐츠 영역 - 티커슬라이더(45px)와 헤더(72px) 높이를 고려한 패딩 */}
+            <Box component="main" sx={{
+              flexGrow: 1,
+              pt: '117px', // 45px + 72px
+              position: 'relative',
+              zIndex: 900 // 헤더와 티커보다 낮은 zIndex
+            }}>
+              <Routes>
+                <Route path="/" element={<Main />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/profile" element={<Mypage />} />
+                <Route path="/nearby-salons" element={<SalonsPage />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/about/reviews" element={<Reviews />} />
+                <Route path="/about/lookbook" element={<Lookbook />} />
+                <Route path="/profile" element={<Mypage />} />
+                <Route path="/mypage" element={<Mypage />} />
+              </Routes>
+            </Box>
+
+            <Footer />
           </Box>
-
-          <Footer />
-        </Box>
-      </Router>
-    </ThemeProvider>
+        </Router>
+      </ThemeProvider>
+    </AuthProvider>
   );
 }
 

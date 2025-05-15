@@ -25,15 +25,15 @@ import { styled } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import PersonIcon from '@mui/icons-material/Person'; // Import for default avatar icon
-import EditIcon from '@mui/icons-material/Edit'; // Import for edit icon
-import AccountCircleIcon from '@mui/icons-material/AccountCircle'; // Import for profile icon
-import ExitToAppIcon from '@mui/icons-material/ExitToApp'; // Import for logout icon
+import PersonIcon from '@mui/icons-material/Person';
+import EditIcon from '@mui/icons-material/Edit';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { Link, useLocation } from 'react-router-dom';
-import { auth } from '../../services/firebase';
-import { logoutUser } from '../../services/auth';
 import TickerSlider from './TickerSlider';
+import { useAuth } from '../../contexts/AuthContext';
 
+// 스타일 컴포넌트들은 그대로 유지
 // 헤더 AppBar 스타일 - 스크롤에 따라 보이거나 숨김
 const StyledAppBar = styled(AppBar)(({ theme, scrolled }) => ({
     // 기본 배경은 불투명하게 유지, 스크롤 시에만 투명도 적용
@@ -283,7 +283,6 @@ const menuItems = [
 ];
 
 const Header = () => {
-    const [kakaoUser, setKakaoUser] = useState(null); // 카카오 사용자 상태 추가
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
@@ -291,12 +290,10 @@ const Header = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const location = useLocation();
-    const user = auth.currentUser;
     const isHomePage = location.pathname === '/';
 
-
-    // 사용자 프로필 이미지 상태
-    const [profileImageUrl, setProfileImageUrl] = useState(null);
+    // 인증 컨텍스트 사용
+    const { userInfo, isLoggedIn, logout } = useAuth();
 
     // 현재 경로가 메뉴 항목 페이지인지 확인하는 함수
     const isMenuPage = () => {
@@ -338,16 +335,6 @@ const Header = () => {
         };
     }, [location.pathname, isMenuPage]);
 
-
-    // 유저 프로필 이미지 체크
-    useEffect(() => {
-        if (user && user.photoURL) {
-            setProfileImageUrl(user.photoURL);
-        } else {
-            setProfileImageUrl(null);
-        }
-    }, [user]);
-
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
@@ -361,7 +348,7 @@ const Header = () => {
     };
 
     const handleLogout = async () => {
-        await logoutUser();
+        await logout();
         handleClose();
     };
 
@@ -495,7 +482,7 @@ const Header = () => {
             </List>
             <Divider sx={{ my: 1 }} />
             <Box sx={{ px: 2, py: 1 }}>
-                {user ? (
+                {isLoggedIn ? (
                     <>
                         <Box sx={{
                             display: 'flex',
@@ -504,20 +491,20 @@ const Header = () => {
                             p: 1,
                         }}>
                             {/* 모바일 프로필 이미지 */}
-                            <ProfileAvatar src={profileImageUrl}>
-                                {!profileImageUrl && <PersonIcon />}
+                            <ProfileAvatar src={userInfo?.photoURL}>
+                                {!userInfo?.photoURL && <PersonIcon />}
                             </ProfileAvatar>
                             <Box sx={{ ml: 2, flex: 1 }}>
                                 <Typography variant="body2" fontWeight={500} fontSize="0.9rem"
                                     fontFamily="'Montserrat', 'Pretendard', sans-serif"
                                     letterSpacing="0.03em">
-                                    {user.displayName || '사용자'}
+                                    {userInfo?.name || '사용자'}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary" sx={{
                                     fontSize: '0.8rem',
                                     fontFamily: "'Montserrat', 'Pretendard', sans-serif",
                                 }}>
-                                    {user.email}
+                                    {userInfo?.email || ''}
                                 </Typography>
                             </Box>
                             <IconButton
@@ -600,6 +587,7 @@ const Header = () => {
         <>
             {/* 메인 페이지에서만 상단 티커 슬라이더 표시 */}
             {isHomePage && <TickerSlider />}
+
             {/* 스크롤에 따라 등장하는 헤더 */}
             <StyledAppBar scrolled={scrolled ? 1 : 0}>
                 <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3 } }}>
@@ -683,10 +671,7 @@ const Header = () => {
                                 color="inherit"
                                 aria-label="menu"
                                 onClick={handleDrawerToggle}
-                                sx={{
-                                    ml: 'auto',
-                                    p: 0.5,
-                                }}
+                                sx={{ ml: 'auto', p: 0.5 }}
                             >
                                 <MenuIcon />
                             </IconButton>
@@ -697,39 +682,37 @@ const Header = () => {
                                 alignItems: 'center',
                                 width: '33%'
                             }}>
-                                {user ? (
-                                    <>
-                                        <Box
-                                            onClick={handleMenu}
+                                {isLoggedIn ? (
+                                    <Box
+                                        onClick={handleMenu}
+                                        sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            cursor: 'pointer',
+                                            padding: '4px 8px',
+                                            borderRadius: '20px',
+                                            transition: 'background-color 0.2s',
+                                            '&:hover': {
+                                                backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                                            }
+                                        }}
+                                    >
+                                        {/* 프로필 이미지 */}
+                                        <ProfileAvatar src={userInfo?.photoURL}>
+                                            {!userInfo?.photoURL && <PersonIcon />}
+                                        </ProfileAvatar>
+                                        <Typography
                                             sx={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                cursor: 'pointer',
-                                                padding: '4px 8px',
-                                                borderRadius: '20px',
-                                                transition: 'background-color 0.2s',
-                                                '&:hover': {
-                                                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                                                }
+                                                ml: 1.5,
+                                                fontSize: '0.95rem',
+                                                fontWeight: 400,
+                                                textTransform: 'uppercase',
+                                                letterSpacing: '0.05em',
+                                                fontFamily: "'Montserrat', 'Pretendard', sans-serif",
                                             }}
                                         >
-                                            {/* 프로필 이미지 */}
-                                            <ProfileAvatar src={profileImageUrl}>
-                                                {!profileImageUrl && <PersonIcon />}
-                                            </ProfileAvatar>
-                                            <Typography
-                                                sx={{
-                                                    ml: 1.5,
-                                                    fontSize: '0.95rem',
-                                                    fontWeight: 400,
-                                                    textTransform: 'uppercase',
-                                                    letterSpacing: '0.05em',
-                                                    fontFamily: "'Montserrat', 'Pretendard', sans-serif",
-                                                }}
-                                            >
-                                                {user.displayName || '사용자'}
-                                            </Typography>
-                                        </Box>
+                                            {userInfo?.name || '사용자'}
+                                        </Typography>
                                         <Menu
                                             id="menu-appbar"
                                             anchorEl={anchorEl}
@@ -755,8 +738,8 @@ const Header = () => {
                                             }}
                                         >
                                             <Box sx={{ px: 2, py: 1.5, display: 'flex', alignItems: 'center' }}>
-                                                <MenuAvatar src={profileImageUrl} sx={{ width: 32, height: 32 }}>
-                                                    {!profileImageUrl && <PersonIcon />}
+                                                <MenuAvatar src={userInfo?.photoURL} sx={{ width: 32, height: 32 }}>
+                                                    {!userInfo?.photoURL && <PersonIcon />}
                                                 </MenuAvatar>
                                                 <Box sx={{ ml: 1.5, flex: 1 }}>
                                                     <Typography
@@ -768,7 +751,7 @@ const Header = () => {
                                                             lineHeight: 1.2
                                                         }}
                                                     >
-                                                        {user.displayName || '사용자'}
+                                                        {userInfo?.name || '사용자'}
                                                     </Typography>
                                                     <Typography
                                                         sx={{
@@ -777,7 +760,7 @@ const Header = () => {
                                                             fontFamily: "'Montserrat', 'Pretendard', sans-serif",
                                                         }}
                                                     >
-                                                        {user.email}
+                                                        {userInfo?.email || ''}
                                                     </Typography>
                                                 </Box>
                                                 <IconButton
@@ -795,9 +778,17 @@ const Header = () => {
                                             </Box>
                                             <Divider />
                                             <MenuItem
-                                                component={Link}
-                                                to="/profile"
-                                                onClick={handleClose}
+                                                onClick={() => {
+                                                    handleClose();
+                                                    // 현재 URL이 이미 /profile 또는 /mypage인 경우에만 새로고침
+                                                    if (window.location.pathname.includes('/profile') ||
+                                                        window.location.pathname.includes('/mypage')) {
+                                                        window.location.reload();
+                                                    } else {
+                                                        // navigate 대신 window.location.href 사용
+                                                        window.location.href = '/profile'; // 또는 '/mypage'
+                                                    }
+                                                }}
                                                 sx={{
                                                     py: 1.2,
                                                     px: 2,
@@ -827,7 +818,7 @@ const Header = () => {
                                                 로그아웃
                                             </MenuItem>
                                         </Menu>
-                                    </>
+                                    </Box>
                                 ) : (
                                     <>
                                         <LoginButton
@@ -839,7 +830,7 @@ const Header = () => {
                                         </LoginButton>
                                         <LoginButton
                                             component={Link}
-                                            to="/register"
+                                            to="/signup"
                                             disableRipple
                                             sx={{ ml: 2.5 }}
                                         >

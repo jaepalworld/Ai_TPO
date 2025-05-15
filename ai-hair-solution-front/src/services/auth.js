@@ -40,3 +40,39 @@ export const logoutUser = async () => {
 export const observeAuthState = (callback) => {
     return onAuthStateChanged(auth, callback);
 };
+// 카카오 로그인 상태 확인
+export const checkKakaoLoginStatus = () => {
+    if (window.Kakao && window.Kakao.Auth.getAccessToken()) {
+        return true;
+    }
+
+    const storedUser = localStorage.getItem('kakaoUser');
+    return !!storedUser;
+};
+
+// 카카오 사용자 정보 가져오기
+export const getKakaoUserInfo = () => {
+    const storedUser = localStorage.getItem('kakaoUser');
+    return storedUser ? JSON.parse(storedUser) : null;
+};
+
+// 통합 로그아웃 (Firebase + 카카오)
+export const logoutAllProviders = async () => {
+    try {
+        // Firebase 로그아웃
+        await logoutUser();
+
+        // 카카오 로그아웃
+        if (window.Kakao && window.Kakao.Auth.getAccessToken()) {
+            window.Kakao.Auth.logout(() => {
+                localStorage.removeItem('kakaoUser');
+            });
+        } else {
+            localStorage.removeItem('kakaoUser');
+        }
+
+        return { success: true, error: null };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+};

@@ -9,6 +9,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import CloseIcon from '@mui/icons-material/Close';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import KakaoLogin from './KakaoLogin';
+import KakaoChannelChat from './KakaoChannelChat';
 
 const Menu = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -60,12 +61,19 @@ const Menu = () => {
     const handleKakaoLoginSuccess = (userData) => {
         console.log('카카오 로그인 성공:', userData);
         setIsLoggedIn(true);
+        window.dispatchEvent(new Event('userLogin'));
     };
 
     // AI 상담 처리 함수
     const handleAiChat = () => {
-        console.log('AI 상담 시작');
-        setIsAiChatOpen(true);
+        // 사용자가 로그인한 상태라면 카카오 채널 상담 모달 열기
+        if (isLoggedIn) {
+            setIsAiChatOpen(true);
+        } else {
+            // 로그인 필요 안내
+            // 또는 간단한 로그인 없이 사용 가능한 채널 상담 모달 표시
+            setIsAiChatOpen(true);
+        }
     };
 
     // 유튜브로 이동하는 함수
@@ -140,19 +148,14 @@ const Menu = () => {
 
                 {/* AI 상담 버튼 - 로그인 후에만 표시 */}
                 {isLoggedIn && (
-                    <Tooltip title="AI 상담" placement="left">
-                        <IconButton
-                            onClick={handleAiChat}
-                            sx={{
-                                color: '#666',
-                                width: 60,
-                                height: 60,
-                                margin: '8px 0',
-                                '&:hover': { color: '#1976d2' }
-                            }}
-                        >
-                            <SmartToyIcon sx={{ fontSize: 32 }} />
-                        </IconButton>
+                    <Tooltip title="카카오톡 상담" placement="left">
+                        <Box>
+                            <KakaoChannelChat
+                                isButton={false}
+                                iconSize={{ width: 60, height: 60 }}
+                                onSuccess={() => console.log('카카오톡 상담 시작')}
+                            />
+                        </Box>
                     </Tooltip>
                 )}
 
@@ -303,6 +306,15 @@ const Menu = () => {
                         <Typography variant="body2" sx={{ backgroundColor: '#e0e0e0', p: 1, borderRadius: 1, display: 'inline-block', mb: 1 }}>
                             안녕하세요! AI 헤어 스타일 상담사입니다. 어떤 도움이 필요하신가요?
                         </Typography>
+
+                        {/* 카카오톡 상담 추천 메시지 */}
+                        <Typography variant="body2" sx={{ backgroundColor: '#e0e0e0', p: 1, borderRadius: 1, display: 'inline-block', mt: 2 }}>
+                            1:1 상담을 원하시면 카카오톡 채널 상담을 이용해보세요!
+                        </Typography>
+                        {/* 카카오톡 채널 상담 버튼 - 모달 내부 */}
+                        <Box sx={{ mt: 2, textAlign: 'center' }}>
+                            <KakaoChannelChat buttonText="카카오톡 1:1 상담 시작하기" />
+                        </Box>
                     </Box>
 
                     <Box sx={{ display: 'flex' }}>
@@ -328,5 +340,6 @@ const Menu = () => {
         </>
     );
 };
+
 
 export default Menu;
