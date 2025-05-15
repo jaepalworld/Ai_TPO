@@ -1,28 +1,29 @@
-// App.js - 최종 수정 버전
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
-import Mypage from './pages/Mypage';
-// import Home from './pages/Home'; // 필요 없다면 제거
-// 티커슬라이더 직접 임포트
+// 컴포넌트 불러오기 - 경로 업데이트
 import TickerSlider from './components/common/TickerSlider';
-// 테마 설정
-import theme from './theme';
-// 컴포넌트 불러오기
 import Header from './components/common/Header';
 import Footer from './components/common/Footer';
 // 페이지 불러오기
 import Main from './pages/Main';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
+
+// 로그인 관련 컴포넌트 경로 업데이트
+import Login from './components/login/Login';
+import Signup from './components/login/Signup';
+import Mypage from './components/login/Mypage';
+
+// 기타 페이지 컴포넌트
 import SalonsPage from './pages/SalonsPage';
 
-//헤더 about 드롭 버튼 페이지들
+// 헤더 about 드롭 버튼 페이지들
 import About from './components/about/About';
 import Reviews from './components/about/Reviews';
 import Lookbook from './components/about/Lookbook';
+// 테마 설정
+import theme from './theme';
 
 function App() {
   return (

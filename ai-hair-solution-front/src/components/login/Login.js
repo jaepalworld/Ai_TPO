@@ -8,10 +8,13 @@ import {
     Box,
     Grid,
     Link,
-    Alert
+    Alert,
+    Divider,
+    CircularProgress
 } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { loginUser } from '../services/auth';
+import { loginUser } from '../../services/auth';
+import KakaoLogin from './KakaoLogin';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -26,7 +29,6 @@ const Login = () => {
         setLoading(true);
 
         try {
-            // user 변수 사용하지 않는 경고 해결 - destructuring에서 제거
             const { error: loginError } = await loginUser(email, password);
 
             if (loginError) {
@@ -56,6 +58,19 @@ const Login = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    // 카카오 로그인 성공 핸들러
+    const handleKakaoLoginSuccess = (userData) => {
+        console.log('카카오 로그인 성공:', userData);
+        // 백엔드와 연동이 필요하다면 여기서 처리
+        navigate('/');
+    };
+
+    // 카카오 로그인 실패 핸들러
+    const handleKakaoLoginFailure = (error) => {
+        console.error('카카오 로그인 실패:', error);
+        setError('카카오 로그인에 실패했습니다.');
     };
 
     return (
@@ -104,9 +119,19 @@ const Login = () => {
                             sx={{ mt: 3, mb: 2 }}
                             disabled={loading}
                         >
-                            {loading ? '로그인 중...' : '로그인'}
+                            {loading ? <CircularProgress size={24} /> : '로그인'}
                         </Button>
-                        <Grid container>
+
+                        <Divider sx={{ my: 2 }}>또는</Divider>
+
+                        {/* 카카오 로그인 버튼 */}
+                        <KakaoLogin
+                            buttonText="카카오로 로그인"
+                            onLoginSuccess={handleKakaoLoginSuccess}
+                            onLoginFailure={handleKakaoLoginFailure}
+                        />
+
+                        <Grid container sx={{ mt: 2 }}>
                             <Grid item xs>
                                 <Link component={RouterLink} to="/forgot-password" variant="body2">
                                     비밀번호를 잊으셨나요?
