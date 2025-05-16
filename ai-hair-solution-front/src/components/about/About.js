@@ -7,19 +7,19 @@ const About = () => {
     // 회사 연혁 데이터
     const history = [
         { year: 2023, event: 'AiHairSolution 프로젝트 시작' },
-        { year: 2023, event: '초기 AI 헤어 분석 알고리즘 개발' },
-        { year: 2024, event: '첫 번째 AI 헤어 솔루션 서비스 프로토타입 개발' },
+        { year: 2023, event: '초기 AI 분석 알고리즘 개발' },
+        { year: 2024, event: '첫 번째 AI 솔루션 서비스 프로토타입 개발' },
         { year: 2024, event: 'Firebase를 활용한 데이터베이스 구축' },
         { year: 2025, event: 'React 기반 웹 애플리케이션 출시' },
-        { year: 2025, event: '헤어 스타일 가상 체험 기능 구현 (ComfyUI 활용)' }
+        { year: 2025, event: '스타일 가상 체험 기능 구현 (ComfyUI 활용)' }
     ];
 
     return (
         <div className="about-container">
             <section className="hero-section">
                 <div className="hero-content">
-                    <h1>AI로 변화하는 헤어 스타일링의 미래</h1>
-                    <p>인공지능으로 당신에게 딱 맞는 완벽한 헤어 스타일을 찾아드립니다</p>
+                    <h1>AI로 변화하는 스타일링의 미래</h1>
+                    <p>인공지능으로 당신에게 딱 맞는 완벽한 스타일을 찾아드립니다</p>
                 </div>
             </section>
 

@@ -383,7 +383,7 @@ const NearbySalonsSection = () => {
 
                 <Typography variant="h6" component="p" align="center" sx={{ mb: 5 }}>
                     현재 위치를 기반으로 가까운 미용실을 찾아보세요.
-                    AI 헤어 스타일을 체험한 후 실제 시술을 받을 수 있는 주변 헤어샵을 추천해 드립니다.
+                    AI 스타일을 체험한 후 실제 시술을 받을 수 있는 주변 헤어샵을 추천해 드립니다.
                 </Typography>
 
                 {/* 검색창 */}

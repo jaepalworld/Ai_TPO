@@ -204,14 +204,14 @@ const slides = [
         id: 1,
         image: process.env.PUBLIC_URL + '/images/aback1.png',
         // title: '당신만의 스타일을 찾아보세요',
-        // subtitle: '최신 트렌드에 맞는 헤어 스타일로 새로운 변화를 시작하세요.',
+
         actionText: '스타일 탐색하기',
     },
     {
         id: 2,
         image: process.env.PUBLIC_URL + '/images/aback2.png',
         // title: '맞춤형, 아름다움',
-        // subtitle: '개인의 얼굴형과 이미지에 맞는 최적의 헤어스타일을 제안합니다.',
+        // subtitle: '개인의 얼굴형과 이미지에 맞는 최적의 스타일을 제안합니다.',
         actionText: '상담 예약하기',
     },
     {
