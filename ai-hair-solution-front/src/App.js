@@ -15,6 +15,9 @@ import Login from './components/login/Login';
 import Signup from './components/login/Signup';
 import Mypage from './components/login/Mypage';
 
+//채팅 관련 컴포넌트
+import AIChat from './components/chat/Aichat';
+
 // 기타 페이지 컴포넌트
 import SalonsPage from './pages/SalonsPage';
 
@@ -65,6 +68,7 @@ function App() {
                 <Route path="/about/lookbook" element={<Lookbook />} />
                 <Route path="/profile" element={<Mypage />} />
                 <Route path="/mypage" element={<Mypage />} />
+                <Route path="/chat/ai" element={<AIChat />} />
               </Routes>
             </Box>
 
