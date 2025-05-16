@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { Box, IconButton, Tooltip, Typography, Modal, Paper, Button } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -10,6 +11,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import KakaoLogin from './KakaoLogin';
 import KakaoChannelChat from './KakaoChannelChat';
+
 
 const Menu = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -120,10 +122,10 @@ const Menu = () => {
                     </IconButton>
                 </Tooltip>
 
-                {/* 채팅 상담 버튼 */}
-                <Tooltip title="채팅 상담" placement="left">
+                <Tooltip title="AI 상담" placement="left">
                     <IconButton
-                        onClick={() => setIsChatOpen(true)}
+                        component={Link}
+                        to="/chat/ai"
                         sx={{
                             color: '#666',
                             width: 60,
@@ -131,20 +133,22 @@ const Menu = () => {
                             margin: '8px 0'
                         }}
                     >
-                        <ChatIcon sx={{ fontSize: 32 }} />
+                        <SmartToyIcon sx={{ fontSize: 32 }} /> {/* ChatIcon에서 SmartToyIcon으로 변경 */}
                     </IconButton>
                 </Tooltip>
 
-                {/* 카카오 버튼 - 아이콘 모드로 제공 */}
-                <Tooltip title="카카오 로그인/상담" placement="left">
-                    <Box>
-                        <KakaoLogin
-                            isButton={false}
-                            iconSize={{ width: 60, height: 60 }}
-                            onLoginSuccess={handleKakaoLoginSuccess}
-                        />
-                    </Box>
-                </Tooltip>
+                {/* 카카오 버튼 - 로그인되지 않았을 때만 표시 */}
+                {!isLoggedIn && (
+                    <Tooltip title="카카오 로그인" placement="left">
+                        <Box>
+                            <KakaoLogin
+                                isButton={false}
+                                iconSize={{ width: 60, height: 60 }}
+                                onLoginSuccess={handleKakaoLoginSuccess}
+                            />
+                        </Box>
+                    </Tooltip>
+                )}
 
                 {/* AI 상담 버튼 - 로그인 후에만 표시 */}
                 {isLoggedIn && (
@@ -205,11 +209,11 @@ const Menu = () => {
                 </Tooltip>
             </Box>
 
-            {/* 일반 채팅 상담 모달 */}
+            {/* 일반 채팅 상담 모달을 AI 상담 모달로 변경 */}
             <Modal
                 open={isChatOpen}
                 onClose={() => setIsChatOpen(false)}
-                aria-labelledby="chat-modal"
+                aria-labelledby="ai-chat-modal"
             >
                 <Paper sx={{
                     position: 'absolute',
@@ -225,8 +229,8 @@ const Menu = () => {
                 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                         <Typography variant="h6" component="h2">
-                            <ChatIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
-                            채팅 상담
+                            <SmartToyIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
+                            AI 상담
                         </Typography>
                         <IconButton onClick={() => setIsChatOpen(false)}>
                             <CloseIcon />
@@ -242,7 +246,7 @@ const Menu = () => {
                         overflowY: 'auto'
                     }}>
                         <Typography variant="body2" sx={{ backgroundColor: '#e0e0e0', p: 1, borderRadius: 1, display: 'inline-block', mb: 1 }}>
-                            안녕하세요! 고객센터입니다. 무엇을 도와드릴까요?
+                            안녕하세요! AI 스타일 어시스턴트입니다. 어떤 도움이 필요하신가요?
                         </Typography>
                     </Box>
 
