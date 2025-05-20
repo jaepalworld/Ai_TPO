@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { Box, IconButton, Tooltip, Typography, Modal, Paper, Button } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -18,6 +18,8 @@ const Menu = () => {
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [isAiChatOpen, setIsAiChatOpen] = useState(false);
     const [showScrollTop, setShowScrollTop] = useState(false);
+    const [showLoginAlert, setShowLoginAlert] = useState(false);
+    const navigate = useNavigate();
 
     // Firebase 인증 상태 확인
     useEffect(() => {
@@ -68,14 +70,19 @@ const Menu = () => {
 
     // AI 상담 처리 함수
     const handleAiChat = () => {
-        // 사용자가 로그인한 상태라면 카카오 채널 상담 모달 열기
+        // 사용자가 로그인한 상태라면 AI 상담 페이지로 이동
         if (isLoggedIn) {
-            setIsAiChatOpen(true);
+            navigate('/chat/ai');
         } else {
-            // 로그인 필요 안내
-            // 또는 간단한 로그인 없이 사용 가능한 채널 상담 모달 표시
-            setIsAiChatOpen(true);
+            // 로그인 필요 알림 모달 표시
+            setShowLoginAlert(true);
         }
+    };
+
+    // 로그인 페이지로 이동
+    const goToLogin = () => {
+        setShowLoginAlert(false);
+        navigate('/login');
     };
 
     // 유튜브로 이동하는 함수
@@ -124,8 +131,7 @@ const Menu = () => {
 
                 <Tooltip title="AI 상담" placement="left">
                     <IconButton
-                        component={Link}
-                        to="/chat/ai"
+                        onClick={handleAiChat}
                         sx={{
                             color: '#666',
                             width: 60,
@@ -133,7 +139,7 @@ const Menu = () => {
                             margin: '8px 0'
                         }}
                     >
-                        <SmartToyIcon sx={{ fontSize: 32 }} /> {/* ChatIcon에서 SmartToyIcon으로 변경 */}
+                        <SmartToyIcon sx={{ fontSize: 32 }} />
                     </IconButton>
                 </Tooltip>
 
@@ -209,7 +215,7 @@ const Menu = () => {
                 </Tooltip>
             </Box>
 
-            {/* 일반 채팅 상담 모달을 AI 상담 모달로 변경 */}
+            {/* 일반 채팅 상담 모달 */}
             <Modal
                 open={isChatOpen}
                 onClose={() => setIsChatOpen(false)}
@@ -339,6 +345,60 @@ const Menu = () => {
                             전송
                         </Button>
                     </Box>
+                </Paper>
+            </Modal>
+
+            {/* 로그인 필요 알림 모달 */}
+            <Modal
+                open={showLoginAlert}
+                onClose={() => setShowLoginAlert(false)}
+                aria-labelledby="login-alert-modal"
+            >
+                <Paper sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: 400,
+                    p: 4,
+                    outline: 'none',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    textAlign: 'center'
+                }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', mb: 2 }}>
+                        <Typography variant="h6" component="h2">
+                            <SmartToyIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
+                            로그인 필요
+                        </Typography>
+                        <IconButton onClick={() => setShowLoginAlert(false)}>
+                            <CloseIcon />
+                        </IconButton>
+                    </Box>
+
+                    <Typography variant="body1" sx={{ mb: 3, wordBreak: 'keep-all', whiteSpace: 'pre-line', textAlign: 'center' }}>
+                        AI 상담 서비스를 이용하시려면 로그인이 필요합니다
+                    </Typography>
+
+                    <Button
+                        variant="contained"
+                        onClick={goToLogin}
+                        sx={{
+                            minWidth: '50%',
+                            mb: 2
+                        }}
+                    >
+                        로그인 페이지로 이동
+                    </Button>
+
+                    <Button
+                        variant="outlined"
+                        onClick={() => setShowLoginAlert(false)}
+                        sx={{ minWidth: '50%' }}
+                    >
+                        취소
+                    </Button>
                 </Paper>
             </Modal>
         </>
