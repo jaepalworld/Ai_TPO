@@ -1,3 +1,4 @@
+# api 키 설정 Gemini 모델 설정 프롬프트 설정
 from pydantic import BaseModel
 import google.generativeai as genai
 import os
