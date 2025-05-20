@@ -1,0 +1,33 @@
+{
+  "$id": "27",
+  "AutoRefresh": true,
+  "AutoRefreshRemotes": true,
+  "CommitTextLinks": null,
+  "DraftCommitMsg": "",
+  "IncomingSavedCount": 0,
+  "LastCheckedRemotes": "2025-05-18T05:37:54.5742039+09:00",
+  "LastUsedView": 1,
+  "LogBranchFilterIndex": 0,
+  "OutgoingSavedCount": 0,
+  "SidebarExpandedItems": [
+    "브랜치"
+  ],
+  "SidebarWidth": 210.0,
+  "SubtreeLinks": [],
+  "NeedsLargeFilesPull": false,
+  "RemoteProjectLinks": [
+    {
+      "$id": "28",
+      "BaseUrl": "https://github.com",
+      "Identifier": "jaepalworld/AiHairSolution",
+      "RemoteName": "origin",
+      "Type": 0,
+      "Username": "cjw4032@gmail.com",
+      "CloneUrl": null,
+      "ProjectUrl": null,
+      "AccountId": "",
+      "AvatarUrl": null,
+      "DisplayName": "origin: https://github.com"
+    }
+  ]
+}
