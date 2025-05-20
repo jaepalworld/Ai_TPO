@@ -92,34 +92,26 @@ const KakaoChannelChat = ({
         setError('');
     };
 
-    // 직접 URL로 카카오 채팅 열기 (대체 방법)
-    const openDirectKakaoChat = () => {
-        window.open(`https://pf.kakao.com/${channelPublicId.replace('_', '')}/chat`, '_blank');
-    };
-
     // 카카오톡 채널 상담 시작
     const startKakaoChat = () => {
         // SDK 로드 확인
         if (!window.Kakao) {
             console.error('Kakao SDK가 로드되지 않았습니다');
-            setError('카카오 SDK가 로드되지 않았습니다. 직접 채팅으로 진행합니다.');
-            openDirectKakaoChat();
+            setError('카카오 SDK가 로드되지 않았습니다.');
             return;
         }
 
         // SDK 초기화 확인
         if (!window.Kakao.isInitialized()) {
             console.error('Kakao SDK가 초기화되지 않았습니다');
-            setError('카카오 SDK가 초기화되지 않았습니다. 직접 채팅으로 진행합니다.');
-            openDirectKakaoChat();
+            setError('카카오 SDK가 초기화되지 않았습니다.');
             return;
         }
 
         // Channel 객체 확인
         if (!window.Kakao.Channel) {
             console.error('Kakao.Channel 객체가 없습니다');
-            setError('카카오 채널 기능을 불러올 수 없습니다. 직접 채팅으로 진행합니다.');
-            openDirectKakaoChat();
+            setError('카카오 채널 기능을 불러올 수 없습니다.');
             return;
         }
 
@@ -140,8 +132,7 @@ const KakaoChannelChat = ({
             setIsModalOpen(false);
         } catch (err) {
             console.error('카카오 채널 상담 시작 에러:', err);
-            setError('카카오톡 채널 상담을 시작할 수 없습니다. 직접 채팅으로 진행합니다.');
-            openDirectKakaoChat();
+            setError('카카오톡 채널 상담을 시작할 수 없습니다.');
 
             if (onFailure) {
                 onFailure(err);
@@ -236,7 +227,7 @@ const KakaoChannelChat = ({
                             메시지가 발송되었으니 확인해 주세요.
                         </Typography>
 
-                        <Box sx={{ display: 'flex', gap: 2 }}>
+                        <Box>
                             <Button
                                 fullWidth
                                 variant="contained"
@@ -249,20 +240,6 @@ const KakaoChannelChat = ({
                                 disabled={loading}
                             >
                                 {loading ? <CircularProgress size={24} /> : 'API로 상담 시작하기'}
-                            </Button>
-
-                            <Button
-                                fullWidth
-                                variant="outlined"
-                                sx={{
-                                    borderColor: '#FEE500',
-                                    color: '#3A1D1D',
-                                    '&:hover': { backgroundColor: '#FFF9E6' }
-                                }}
-                                onClick={openDirectKakaoChat}
-                                disabled={loading}
-                            >
-                                직접 채팅 열기
                             </Button>
                         </Box>
                     </Paper>
@@ -346,7 +323,7 @@ const KakaoChannelChat = ({
                             메시지가 발송되었으니 확인해 주세요.
                         </Typography>
 
-                        <Box sx={{ display: 'flex', gap: 2 }}>
+                        <Box>
                             <Button
                                 fullWidth
                                 variant="contained"
@@ -359,20 +336,6 @@ const KakaoChannelChat = ({
                                 disabled={loading}
                             >
                                 {loading ? <CircularProgress size={24} /> : 'API로 상담 시작하기'}
-                            </Button>
-
-                            <Button
-                                fullWidth
-                                variant="outlined"
-                                sx={{
-                                    borderColor: '#FEE500',
-                                    color: '#3A1D1D',
-                                    '&:hover': { backgroundColor: '#FFF9E6' }
-                                }}
-                                onClick={openDirectKakaoChat}
-                                disabled={loading}
-                            >
-                                직접 채팅 열기
                             </Button>
                         </Box>
                     </Paper>
