@@ -19,7 +19,9 @@ import SendIcon from '@mui/icons-material/Send';
 import ChatIcon from '@mui/icons-material/Chat';
 import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
-import './Aichat.css'; // 수정: AIChat.css → Aichat.css
+import './Aichat.css';
+import { sendMessageToAI } from '../../services/chatService';
+
 
 const AIChat = () => {
     const [sessions, setSessions] = useState({}); // 날짜별 세션 저장
@@ -191,34 +193,55 @@ const AIChat = () => {
             [currentDate]: updatedMessages
         }));
 
-        // AI 응답 처리 (실제로는 백엔드 API 호출)
+        // AI 응답 처리 (실제 FastAPI 백엔드 API 호출)
         try {
-            // TODO: 실제 AI API 호출 구현
-            // const response = await fetchAIResponse(inputMessage);
+            // 로딩 메시지 추가 (선택사항)
+            const loadingId = Date.now() + 1;
+            const loadingMessage = {
+                id: loadingId,
+                text: '응답 생성 중...',
+                sender: 'ai',
+                timestamp: new Date().toISOString(),
+                isLoading: true
+            };
 
-            // 임시 응답
-            setTimeout(() => {
-                const aiResponse = {
-                    id: Date.now() + 1,
-                    text: `"${inputMessage}"에 대한 답변입니다. 스타일에 관한 질문에 답변해 드리겠습니다.`,
-                    sender: 'ai',
-                    timestamp: new Date().toISOString()
-                };
+            setMessages(prev => [...prev, loadingMessage]);
 
-                const messagesWithResponse = [...updatedMessages, aiResponse];
-                setMessages(messagesWithResponse);
+            // 이전 메시지 기록 준비 (옵션 - Gemini에 컨텍스트 제공)
+            // 최근 10개 메시지만 전송 (너무 많은 토큰 사용 방지)
+            const recentMessages = messages.slice(-10).map(msg => ({
+                text: msg.text,
+                sender: msg.sender
+            }));
 
-                // 세션 업데이트
-                setSessions(prev => ({
-                    ...prev,
-                    [currentDate]: messagesWithResponse
-                }));
-            }, 1000);
+            // 백엔드 API 호출
+            const aiResponseText = await sendMessageToAI(inputMessage, recentMessages);
+
+            // 로딩 메시지 제거
+            setMessages(prev => prev.filter(msg => msg.id !== loadingId));
+
+            // 실제 응답 추가
+            const aiResponse = {
+                id: Date.now() + 2,
+                text: aiResponseText,
+                sender: 'ai',
+                timestamp: new Date().toISOString()
+            };
+
+            const messagesWithResponse = [...updatedMessages, aiResponse];
+            setMessages(messagesWithResponse);
+
+            // 세션 업데이트
+            setSessions(prev => ({
+                ...prev,
+                [currentDate]: messagesWithResponse
+            }));
+
         } catch (error) {
             console.error('AI 응답 오류:', error);
 
             const errorMessage = {
-                id: Date.now() + 1,
+                id: Date.now() + 2,
                 text: '죄송합니다. 응답 중 오류가 발생했습니다.',
                 sender: 'ai',
                 timestamp: new Date().toISOString()
