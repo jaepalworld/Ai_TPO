@@ -1,4 +1,4 @@
-# AI TPO Solution - Full Stack Project
+# AI TPO - Full Stack Project
 ![Project Banner](https://via.placeholder.com/1200x300?text=AI+Hair+Solution)
 
 ## 📱 프로젝트 소개
