@@ -1,24 +1,36 @@
 # AI TPO - Full Stack Project
-![Project Banner](https://via.placeholder.com/1200x300?text=AI+Hair+Solution)
+
+![메인 홈페이지](./images/main.png)
 
 ## 📱 프로젝트 소개
 AI TPO은 AI 기술을 활용하여 사용자에게 스타일을 추천하고 시뮬레이션해주는 웹 애플리케이션입니다. 
 5년간의 미용 현장 경험을 바탕으로 개발된 이 서비스는 사용자의 개인적 특성을 분석하여 최적의 헤어스타일을 제안합니다.
 
+### 🏠 메인 페이지
+![메인 페이지 1](./images/main1.png)
+![메인 페이지 2](./images/main2.png)
+
 ## ✨ 핵심 기능
 
-### 1. TPO(Time, Place, Occasion) (서비스 준비중)
-- 상황별 맞춤형 헤어스타일 추천
-- 직장, 데이트, 파티, 일상 등 다양한 상황에 맞는 스타일 제안
-- 사용자 얼굴 이미지를 업로드하여 실시간 헤어스타일 시뮬레이션
-![TPO Service](https://via.placeholder.com/800x400?text=TPO+Service+Screenshot)
+### 1. TPO(Time, Place, Occasion) 맞춤 추천 시스템
+
+#### 🎨 헤어스타일 추천 서비스
+개인의 얼굴형, 라이프스타일, 선호도를 분석하여 최적의 헤어스타일을 추천합니다.
+![헤어스타일 추천](./images/service1.png)
+
+#### 📍 장소별 맞춤 스타일 추천
+직장, 데이트, 파티, 일상 등 다양한 장소와 상황에 어울리는 헤어스타일을 제안합니다.
+![장소별 스타일 추천](./images/service2.png)
+
+#### ⏰ 시간대별 스타일 추천
+낮, 저녁, 새벽 등 시간대에 따라 적합한 헤어스타일을 추천합니다.
+![시간대별 스타일 추천](./images/service3.png)
 
 ### 2. AI 챗봇 상담 (서비스 구현 완료)
 - AI 기반 스타일 어시스턴트와 실시간 채팅
 - 개인 맞춤형 스타일 추천 및 상담 제공
 - 날짜별 상담 기록 저장 및 조회 기능
 - 빠르고 간편한 스타일 조언 서비스
-![AI Chat](https://via.placeholder.com/800x400?text=AI+Style+Assistant+Chat)
 
 ### 3. 헤어스타일 룩북 & 티커 슬라이더 (서비스 구현 완료)
 - 다양한 헤어스타일을 쉽게 탐색할 수 있는 룩북 기능
@@ -29,7 +41,6 @@ AI TPO은 AI 기술을 활용하여 사용자에게 스타일을 추천하고 �
 - 카카오톡을 통한 실시간 상담 서비스
 - 로그인 사용자를 위한 개인화된 상담 기능
 - 간편한 UI/UX로 접근성 향상
-![Kakao Channel](https://via.placeholder.com/800x400?text=Kakao+Channel+Consultation)
 
 ### 5. 주변 헤어샵 찾기 (서비스 구현 완료)
 - 사용자 위치 기반 주변 미용실 정보 제공
@@ -58,12 +69,60 @@ AI TPO은 AI 기술을 활용하여 사용자에게 스타일을 추천하고 �
 - **Kakao Login API**: 소셜 로그인
 - **Kakao Channel API**: 채널 상담
 
-## 📂 주요 기술 아키텍처
-- **프론트엔드**: React 컴포넌트 기반 아키텍처
-- **백엔드**: Firebase & FastAPI 서비스
-- **AI 통합**: Gemini API 및 ComfyUI 연동 시스템
-- **데이터 저장**: Firebase Firestore & 로컬 스토리지 활용
-- **인증 시스템**: Firebase Authentication & Kakao 소셜 로그인
+## 🏗️ 시스템 아키텍처
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   React.js      │    │   Firebase      │    │   FastAPI       │
+│   Frontend      │◄──►│   Backend       │◄──►│   AI Service    │
+│                 │    │                 │    │                 │
+│ • UI Components │    │ • Authentication│    │ • Gemini API    │
+│ • State Mgmt    │    │ • Firestore DB  │    │ • ComfyUI       │
+│ • Routing       │    │ • Hosting       │    │ • Custom APIs   │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+        │                       │                       │
+        └───────────────────────┼───────────────────────┘
+                                │
+                    ┌─────────────────┐
+                    │  External APIs  │
+                    │                 │
+                    │ • Kakao Maps    │
+                    │ • Kakao Login   │
+                    │ • Kakao Channel │
+                    └─────────────────┘
+```
+
+## 📂 프로젝트 구조
+```
+AI_TPO/
+├── public/
+├── src/
+│   ├── components/     # React 컴포넌트
+│   ├── pages/         # 페이지 컴포넌트
+│   ├── services/      # API 서비스
+│   ├── hooks/         # 커스텀 훅
+│   ├── utils/         # 유틸리티 함수
+│   └── styles/        # 스타일 파일
+├── images/            # 프로젝트 이미지
+└── README.md
+```
+
+## 🚀 프로젝트 실행 방법
+
+### 설치
+```bash
+npm install
+```
+
+### 개발 서버 실행
+```bash
+npm start
+```
+
+### 빌드
+```bash
+npm run build
+```
 
 ## 🔮 향후 개발 계획
 - AI 챗봇의 스타일 분석 정확도 향상
@@ -73,10 +132,21 @@ AI TPO은 AI 기술을 활용하여 사용자에게 스타일을 추천하고 �
 - 사용자 리뷰 및 커뮤니티 기능 확장
 - 다국어 지원
 
-## 👨‍💻 개발자 정보(개인 사이드 프로젝트)
+## 📱 주요 특징
+- **반응형 디자인**: 모든 디바이스에서 최적화된 사용자 경험
+- **실시간 AI 상담**: 즉시 응답하는 AI 스타일리스트
+- **개인화된 추천**: 사용자 맞춤형 스타일 제안
+- **직관적인 UI/UX**: 쉽고 편리한 인터페이스
+
+## 👨‍💻 개발자 정보 (개인 사이드 프로젝트)
 **최재원**
 - 풀스택 개발자
-- 연락처: 010-3161-4032
-- 이메일: cjw4032@gmail.com
-- 블로그: [Velog](https://velog.io/@cjw4032/posts)
+- 5년간의 미용 현장 경험을 바탕으로 한 전문성
+- **연락처**: 010-3161-4032
+- **이메일**: cjw4032@gmail.com
+- **블로그**: [Velog](https://velog.io/@cjw4032/posts)
+- **유튜브**: [낑달달하누](https://www.youtube.com/@%EB%82%91%EB%8B%AC%EB%8B%AC%ED%95%98%EB%88%84)
+
 ---
+
+> 💡 **AI TPO**는 기술과 미용 전문성을 결합하여 개인에게 최적화된 스타일링 솔루션을 제공합니다.
