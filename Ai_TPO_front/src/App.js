@@ -25,6 +25,15 @@ import SalonsPage from './pages/SalonsPage';
 import About from './components/about/About';
 import Reviews from './components/about/Reviews';
 import Lookbook from './components/about/Lookbook';
+
+// FlexZone 컴포넌트 추가
+import FlexZone from './components/home/services/FlexZone';
+
+// TPO 스타일 관련 컴포넌트들
+import HairStyling from './components/home/services/tpo/HairStyling';
+import PlaceBased from './components/home/services/tpo/PlaceBased';
+import OccasionStyle from './components/home/services/tpo/OccasionStyle';
+
 // 테마 설정
 import theme from './theme';
 
@@ -69,6 +78,12 @@ function App() {
                 <Route path="/profile" element={<Mypage />} />
                 <Route path="/mypage" element={<Mypage />} />
                 <Route path="/chat/ai" element={<AIChat />} />
+                {/* FlexZone 페이지 추가 - position: fixed로 전체 화면을 덮음 */}
+                <Route path="/flex-zone" element={<FlexZone />} />
+                {/* TPO 스타일 관련 라우트들 */}
+                <Route path="/hair-styling" element={<HairStyling />} />
+                <Route path="/place-based" element={<PlaceBased />} />
+                <Route path="/occasion-style" element={<OccasionStyle />} />
               </Routes>
             </Box>
 
