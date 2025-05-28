@@ -5,7 +5,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 // 주변 미용실 찾기 컴포넌트 임포트
-import NearbySalonsSection from '../components/home/NearbySalonsSection';
+import KakaomapSection from '../components/home/KakaomapSection';
 
 const SalonsPage = () => {
     return (
@@ -79,7 +79,7 @@ const SalonsPage = () => {
             </Box>
 
             {/* 주변 미용실 찾기 컴포넌트 */}
-            <NearbySalonsSection />
+            <KakaomapSection />
 
             {/* 추가 정보 섹션 */}
             <Box sx={{ py: 6, bgcolor: '#f5f5f5' }}>
