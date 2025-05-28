@@ -373,7 +373,7 @@ const Header = () => {
         <Box sx={{ width: 280, height: '100%' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2 }}>
                 <Logo variant="h6" component={Link} to="/">
-                    AiHairSolution
+                    Ai TPO Solution
                 </Logo>
                 <IconButton onClick={handleDrawerToggle} sx={{ p: 0.5 }}>
                     <CloseIcon />
@@ -660,7 +660,7 @@ const Header = () => {
                                 to="/"
                                 sx={{ textAlign: 'center' }}
                             >
-                                AIHAIRSOLUTION
+                                AI TPO SOLUTION
                             </Logo>
                         </Box>
 
